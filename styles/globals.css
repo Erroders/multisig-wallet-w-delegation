@@ -1,3 +1,23 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.btn-light {
+    @apply inline-block rounded border border-white bg-white p-3 text-sm font-semibold text-gray-900 hover:bg-transparent hover:text-white focus:outline-none focus:ring-0 active:text-white;
+}
+
+.btn-green {
+    @apply inline-block rounded border border-lime-600 bg-lime-600 p-3 text-sm font-semibold text-gray-900 hover:bg-transparent hover:text-lime-600 focus:outline-none focus:ring-0 active:text-lime-600;
+}
+
+.btn-red {
+    @apply inline-block rounded border border-rose-600 bg-rose-600 p-3 text-sm font-semibold text-gray-900 hover:bg-transparent hover:text-rose-600 focus:outline-none focus:ring-0 active:text-rose-600;
+}
+
+.btn-dark {
+    @apply inline-block rounded border border-gray-900 bg-gray-900 p-12 py-3 text-sm font-semibold text-white hover:bg-transparent hover:text-gray-900 focus:outline-none focus:ring-0 active:text-gray-900;
+}
+
+.input {
+    @apply w-full rounded-lg border-gray-200 p-3 text-sm;
+}
