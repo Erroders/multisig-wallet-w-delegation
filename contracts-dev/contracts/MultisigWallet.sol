@@ -12,6 +12,15 @@ contract MultisigWallet {
     uint256 public _txnId;
     uint256 public _signerCount;
 
+    // events ----------------------------------------------------
+    event WalletCreated(address indexed ownerAddress, string ownerCid);
+    event SignerAdded(address indexed signerAddress, string ownerCid);
+    event TransactionCreated(uint256 txnId, address indexed to, uint256 amount);
+    event TransactionApproved(uint256 txnId, address indexed approver);
+    event TransactionExecuted(uint256 txnId);
+    event Delegate(address indexed from, address indexed to);
+    event RevokeDelegation(address indexed signer);
+    
     // mappings --------------------------------------------------
     struct Signer {
         string cid;
@@ -24,7 +33,7 @@ contract MultisigWallet {
         address to;
         uint256 amount;
         uint256 approval;
-        address[] approvedBy;
+        // address[] approvedBy;
     }
 
     // mappings --------------------------------------------------
@@ -32,11 +41,13 @@ contract MultisigWallet {
     mapping(uint256 => Transaction) public transactions;
 
     // constructor -----------------------------------------------
-    constructor() {
+    constructor(string memory cid_) {
         _owner = msg.sender;
         signers[msg.sender].weight = 1;
+        signers[msg.sender].cid = cid_;
         _txnId = 1;
         _signerCount = 1;
+        emit WalletCreated(msg.sender, cid_);
     }
 
     // public functions -----------------------------------------------
@@ -46,6 +57,7 @@ contract MultisigWallet {
         signers[signer_].cid = cid_;
         signers[signer_].weight = 1;
         _signerCount += 1;
+        emit SignerAdded(signer_, cid_);
     }
 
     function delegate(address to_) public {
@@ -70,6 +82,7 @@ contract MultisigWallet {
             to = delegate_.delegateTo;
         }
         signer.delegateTo = to_;
+        emit Delegate(msg.sender, to_);
     }
 
     function revokeDelegation() public {
@@ -85,6 +98,7 @@ contract MultisigWallet {
             delegateAddr = delegate_.delegateTo;
         }
         signer.delegateTo = address(0);
+        emit RevokeDelegation(msg.sender);
     }
 
     function createTransaction(address to_, uint256 amount_) public {
@@ -99,6 +113,8 @@ contract MultisigWallet {
         transactions[_txnId].to = to_;
         transactions[_txnId].amount = amount_;
         _lockedBalance += amount_;
+        emit TransactionCreated(_txnId, to_, amount_);
+
         _approveTransaction(_txnId, msg.sender);
         _txnId += 1;
     }
@@ -116,7 +132,8 @@ contract MultisigWallet {
         Signer memory signer = signers[approver_];
         Transaction storage transaction = transactions[txnId_];
         transaction.approval += signer.weight;
-        transaction.approvedBy.push(approver_);
+        emit TransactionApproved(txnId_, approver_);
+        // transaction.approvedBy.push(approver_);
 
         if (transaction.approval * 100 >= 51 * _signerCount) {
             _executeTransaction(txnId_);
@@ -128,5 +145,6 @@ contract MultisigWallet {
         payable(txn.to).transfer(txn.amount);
         txn.executed = true;
         _lockedBalance -= txn.amount;
+        emit TransactionExecuted(txnId_);
     }
 }
