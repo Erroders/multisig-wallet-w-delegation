@@ -175,9 +175,9 @@ export function handleTransactionExecuted(event: TransactionExecuted): void {
 }
 
 export function handleWalletCreated(event: WalletCreated): void {
-  let wallet = Wallet.load(event.params.ownerAddress.toHex());
+  let wallet = Wallet.load(event.address.toHex());
   if(!wallet){
-    wallet = new Wallet(event.params.ownerAddress.toHex());
+    wallet = new Wallet(event.address.toHex());
     wallet.lockedBalance = BigInt.fromString("0");
     wallet.transactions = [];
     wallet.signers = []
