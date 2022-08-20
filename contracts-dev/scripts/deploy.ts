@@ -1,8 +1,9 @@
 import {ethers} from "hardhat";
+require('dotenv').config({ path: __dirname + '/../env' });
 
 async function main() {
   const MultisigWallet = await ethers.getContractFactory("MultisigWallet");
-  const contract = await MultisigWallet.deploy();
+  const contract = await MultisigWallet.deploy(process.env.OWNER_CID);
   await contract.deployed();
   console.log(
     `Deployment successful!\nContract Address: ${contract.address}`,
