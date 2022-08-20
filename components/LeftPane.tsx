@@ -6,7 +6,7 @@ type Props = {};
 
 const LeftPane = (props: Props) => {
     return (
-        <div className="col-span-2 h-screen bg-gray-900 px-10  py-20 text-white">
+        <div className="sticky top-0 col-span-2 h-screen bg-gray-900 px-10  py-20 text-white">
             <div className="flex h-full flex-col items-center justify-center">
                 <div
                     className="mx-auto h-32 w-32 cursor-pointer overflow-hidden rounded"
