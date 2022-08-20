@@ -14,10 +14,10 @@ contract MultisigWallet {
 
     // events ----------------------------------------------------
     event WalletCreated(address indexed ownerAddress, string ownerCid);
-    event SignerAdded(address indexed signerAddress, string ownerCid);
+    event SignerAdded(address indexed signerAddress, string cid);
     event TransactionCreated(uint256 txnId, address indexed to, uint256 amount);
     event TransactionApproved(uint256 txnId, address indexed approver);
-    event TransactionExecuted(uint256 txnId);
+    event TransactionExecuted(uint256 txnId, address indexed approver);
     event Delegate(address indexed from, address indexed to);
     event RevokeDelegation(address indexed signer);
     
@@ -136,15 +136,15 @@ contract MultisigWallet {
         // transaction.approvedBy.push(approver_);
 
         if (transaction.approval * 100 >= 51 * _signerCount) {
-            _executeTransaction(txnId_);
+            _executeTransaction(txnId_, approver_);
         }
     }
 
-    function _executeTransaction(uint256 txnId_) internal {
+    function _executeTransaction(uint256 txnId_, address approver_) internal {
         Transaction storage txn = transactions[txnId_];
         payable(txn.to).transfer(txn.amount);
         txn.executed = true;
         _lockedBalance -= txn.amount;
-        emit TransactionExecuted(txnId_);
+        emit TransactionExecuted(txnId_, approver_);
     }
 }

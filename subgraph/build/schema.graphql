@@ -1,0 +1,35 @@
+type Signer @entity {
+  id: ID!
+  address: Bytes!
+  weight: BigInt!
+  delegateTo: Signer
+  metadata: SignerMetadata!
+}
+
+type SignerMetadata @entity {
+  id: ID!
+  name: String!
+  contactNo: BigInt!
+  email: String!
+  walletAddress: Bytes!
+  role: String!
+  remarks: String
+}
+
+type Transaction @entity {
+  id: ID!
+  to: Bytes!
+  amount: BigInt!
+  approval: BigInt!
+  executed: Boolean!
+  approvedBy: [Signer!]
+  createdOn: BigInt!
+}
+
+type Wallet @entity {
+  id: ID!
+  lockedBalance: BigInt!
+  owner: Signer!
+  signers: [Signer!]!
+  transactions: [Transaction!]
+}
