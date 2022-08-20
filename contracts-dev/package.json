@@ -5,8 +5,10 @@
   "license": "MIT",
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.1.1",
+    "dotenv": "^16.0.1",
     "ethers": "^5.7.0",
-    "hardhat": "^2.10.2"
+    "hardhat": "^2.10.2",
+    "ts-node": "^10.9.1"
   },
   "scripts": {
     "deploy": "npx hardhat run scripts/deploy.ts --network mumbai"
