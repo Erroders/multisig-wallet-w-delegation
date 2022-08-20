@@ -1,22 +1,38 @@
+import { ethers } from "ethers";
+
 export type Signer = {
-    cid: string;
-    delegate: string;
-    weight: number;
     address: string;
-}
+    weight: number;
+    delegateTo: string;
+    metadata: SignerMetadata;
+    signer: ethers.Signer;
+};
 
 export type SignerMetadata = {
     name: string;
     contactNo: number;
-    email:string;
-    addressWallet : string;
-    role:string;
-    remarks:string;
-}
+    email: string;
+    walletAddress: string;
+    role: string;
+    remarks: string;
+};
 
-export type transaction = {
-    from: string;
+export type Transaction = {
+    id: string;
     to: string;
     amount: number;
-    approvedBy: Signer[]
-}
+    approval: number;
+    executed: boolean;
+    approvedBy: Signer[];
+    createdOn: string;
+};
+
+export type Wallet = {
+    contractAddress: string;
+    owner: Signer;
+    signers: Signer[];
+    transactions: Transaction[];
+    createdOn: string;
+    balance: string;
+    lockedBalance: string;
+};

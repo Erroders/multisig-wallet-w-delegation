@@ -1,14 +1,16 @@
+/* eslint-disable @next/next/no-img-element */
 import React from "react";
 import makeBlockie from "ethereum-blockies-base64";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
 import TransactionCard from "./TransactionCard";
+import { Wallet } from "../utils/types";
 TimeAgo.setDefaultLocale(en.locale);
 TimeAgo.addLocale(en);
 
-type Props = {};
+type Props = { wallet: Wallet };
 
-const RightPane = (props: Props) => {
+const RightPane = ({ wallet }: Props) => {
     const timeAgo = new TimeAgo("en-US");
     return (
         <div className="col-span-4">
@@ -22,11 +24,8 @@ const RightPane = (props: Props) => {
                             }}
                         >
                             <img
-                                src={makeBlockie(
-                                    "0x67B94473D81D0cd00849D563C94d0432Ac988B49"
-                                )}
-                                alt=""
-                                className=""
+                                src={makeBlockie(wallet.contractAddress)}
+                                alt="Wallet Contract Blockie Image"
                             />
                         </div>
                         <div className="flex flex-col">
@@ -34,27 +33,28 @@ const RightPane = (props: Props) => {
                                 Multisig Wallet Contract
                             </span>
                             <span className="font-mono text-lg font-bold">
-                                0x67B94473D81D0cd00849D563C94d0432Ac988B49
+                                {wallet.contractAddress}
                             </span>
                             <span className="text-xs">
-                                Created {timeAgo.format(new Date())}
+                                Created{" "}
+                                {timeAgo.format(new Date(wallet.createdOn))}
                             </span>
                             <div className="mt-8 flex items-center justify-center space-x-16">
                                 <div className="flex flex-col items-center">
                                     <p className="font-mono text-lg font-semibold tracking-tighter">
-                                        20.065 ETH
+                                        {wallet.balance} ETH
                                     </p>
                                     <p className="text-xs">Balance</p>
                                 </div>
                                 <div className="flex flex-col items-center">
                                     <p className="font-mono text-lg font-semibold tracking-tighter">
-                                        3.896 ETH
+                                        {wallet.lockedBalance} ETH
                                     </p>
                                     <p className="text-xs">Locked Balance</p>
                                 </div>
                                 <div className="flex flex-col items-center tracking-tighter">
                                     <p className="font-mono text-lg font-semibold">
-                                        6
+                                        {wallet.signers.length}
                                     </p>
                                     <p className="text-xs">Signers</p>
                                 </div>
@@ -85,22 +85,14 @@ const RightPane = (props: Props) => {
                 </div>
             </section>
             <section className="flex flex-col space-y-3 px-10 py-20">
-                <TransactionCard />
-                <TransactionCard />
-                <TransactionCard />
-                <TransactionCard />
-                <TransactionCard />
-                <TransactionCard />
-                <TransactionCard />
-                <TransactionCard />
-                <TransactionCard />
-                <TransactionCard />
-                <TransactionCard />
-                <TransactionCard />
-                <TransactionCard />
-                <TransactionCard />
-                <TransactionCard />
-                <TransactionCard />
+                {wallet.transactions.map((transaction) => {
+                    return (
+                        <TransactionCard
+                            key={transaction.id}
+                            txn={transaction}
+                        />
+                    );
+                })}
             </section>
         </div>
     );
