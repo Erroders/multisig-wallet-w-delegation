@@ -5,10 +5,11 @@ import LeftPane from "../components/LeftPane";
 import RightPane from "../components/RightPane";
 import { executeQuery } from "../utils/apolloClient";
 import { Signer, Transaction, Wallet } from "../utils/types";
-import { ethers } from "ethers";
+import { useSignerContext } from "../contexts/Signer";
 
 const Home: NextPage = () => {
     const [wallet, setWallet] = useState<Wallet | null>(null);
+    const { signer } = useSignerContext();
     useEffect(() => {
         const getWalletData = async () => {
             let data = await executeQuery(`query{
@@ -33,7 +34,7 @@ const Home: NextPage = () => {
                         walletAddress
                     }
                   }
-                  transactions{
+                  transactions(orderBy: id, orderDirection:desc ){
                     id
                     to
                     amount
@@ -48,9 +49,7 @@ const Home: NextPage = () => {
               }`);
             data = data.wallets[0];
             console.log(data);
-            const balance = await ethers
-                .getDefaultProvider()
-                .getBalance(data.id);
+            const balance = await signer?.signer?.provider?.getBalance(data.id);
             const wallet_: Wallet = {
                 contractAddress: data.id,
                 owner: data.owner.address,
@@ -58,14 +57,14 @@ const Home: NextPage = () => {
                 transactions: data.transactions
                     ? (data.transactions as Transaction[])
                     : [],
-                balance: balance.toString(),
+                balance: balance?.toString() || "0",
                 lockedBalance: data.lockedBalance,
             };
             console.log(wallet_);
             setWallet(wallet_);
         };
         getWalletData();
-    }, []);
+    }, [signer]);
 
     return wallet ? (
         <div>

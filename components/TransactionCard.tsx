@@ -17,7 +17,7 @@ type Props = {
 const TransactionCard = ({ txn }: Props) => {
     const timeAgo = new TimeAgo("en-US");
     const { signer } = useSignerContext();
-    return (
+    return signer ? (
         <div
             className={`group flex items-center justify-between rounded p-5 ${
                 txn.executed ? "bg-emerald-100" : "bg-yellow-100"
@@ -25,7 +25,9 @@ const TransactionCard = ({ txn }: Props) => {
         >
             <div className="flex flex-col justify-between space-y-3 px-10">
                 <p className="flex justify-between space-x-5">
-                    <span className="font-mono text-xs font-semibold">#2</span>
+                    <span className="font-mono text-xs font-semibold">
+                        #{txn.id}
+                    </span>
                     <div className="flex flex-col">
                         <span className="font-mono font-semibold">
                             {txn.to}
@@ -40,15 +42,25 @@ const TransactionCard = ({ txn }: Props) => {
             <span className="text-xs">
                 {timeAgo.format(new Date(Number(txn.createdOn) * 1000))}
             </span>
-            <button
-                className="btn-dark w-min opacity-0 group-hover:opacity-100"
-                type="button"
-                onClick={() => {
-                    if (signer) approveTransaction(signer.signer, txn.id);
-                }}
-            >
-                Approve
-            </button>
+            {txn.executed ? (
+                <span className=" w-min rounded bg-emerald-500 p-1 text-xs opacity-0 group-hover:opacity-100">
+                    executed
+                </span>
+            ) : signer.delegateTo ? (
+                <span className=" w-min rounded bg-yellow-500 p-1 text-xs opacity-0 group-hover:opacity-100">
+                    delegated
+                </span>
+            ) : (
+                <button
+                    className="btn-dark w-min opacity-0 group-hover:opacity-100"
+                    type="button"
+                    onClick={() => {
+                        if (signer) approveTransaction(signer.signer, txn.id);
+                    }}
+                >
+                    Approve
+                </button>
+            )}
             <div className="flex flex-col items-end justify-center space-y-4">
                 <div className="flex space-x-2">
                     {txn.approvedBy.map((signer_) => {
@@ -67,6 +79,8 @@ const TransactionCard = ({ txn }: Props) => {
                 </div>
             </div>
         </div>
+    ) : (
+        <></>
     );
 };
 
