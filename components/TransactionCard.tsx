@@ -63,7 +63,7 @@ const TransactionCard = ({ txn }: Props) => {
             )}
             <div className="flex flex-col items-end justify-center space-y-4">
                 <div className="flex space-x-2">
-                    {txn.approvedBy.map((signer_) => {
+                    {txn.approvedBy.map((signer_: any) => {
                         return (
                             <div
                                 key={signer_.address}

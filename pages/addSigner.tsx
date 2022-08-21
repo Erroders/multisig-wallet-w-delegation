@@ -27,7 +27,7 @@ const AddSigner = (props: Props) => {
                     <form
                         action=""
                         className="mt-6 mb-0 space-y-4 rounded-lg p-8 shadow-2xl"
-                        onSubmit={(e) => {
+                        onSubmit={(e: any) => {
                             e.preventDefault();
                             const data: SignerMetadata = {
                                 name: e.target.name.value,

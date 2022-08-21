@@ -90,7 +90,7 @@ const RightPane = ({ wallet }: Props) => {
                 <div className="col-span-2 my-auto px-20">
                     <form
                         className="flex h-full flex-col items-center justify-center"
-                        onSubmit={(e) => {
+                        onSubmit={(e: any) => {
                             e.preventDefault();
                             if (signer) {
                                 createTransaction(
