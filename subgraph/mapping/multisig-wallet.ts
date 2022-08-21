@@ -18,17 +18,17 @@ import {
 export function handleDelegate(event: Delegate): void {
     let signer = Signer.load(event.params.from.toHex());
     if (signer) {
-      let to = event.params.to.toHex()
-      while (to.length != 0) {
-        let delegate_ = Signer.load(event.params.to.toHex());
-        if(delegate_){
-          delegate_.weight = delegate_.weight.plus(signer.weight);
-          to = delegate_.delegateTo!
-          delegate_.save()
+        let to: string | null = event.params.to.toHex();
+        while (to && to.length != 0) {
+            let delegate_ = Signer.load(to);
+            if (delegate_) {
+                delegate_.weight = delegate_.weight.plus(signer.weight);
+                to = delegate_.delegateTo;
+                delegate_.save();
+            }
         }
-      }
-      signer.delegateTo = event.params.to.toHex();
-      signer.save();
+        signer.delegateTo = event.params.to.toHex();
+        signer.save();
     }
 }
 // Note: If a handler doesn't require existing field values, it is faster
@@ -54,21 +54,21 @@ export function handleDelegate(event: Delegate): void {
 // - contract.transactions(...)
 
 export function handleRevokeDelegation(event: RevokeDelegation): void {
-  let signer = Signer.load(event.params.signer.toHex());
+    let signer = Signer.load(event.params.signer.toHex());
     if (signer) {
-      let delegateAddr = signer.delegateTo;
-      if(delegateAddr){
-        while (delegateAddr.length != 0) {
-          let delegate_ = Signer.load(delegateAddr);
-          if(delegate_){
-            delegate_.weight = delegate_.weight.minus(signer.weight);
-            delegateAddr = delegate_.delegateTo!
-            delegate_.save()
-          }
+        let delegateAddr = signer.delegateTo;
+        if (delegateAddr) {
+            while (delegateAddr.length != 0) {
+                let delegate_ = Signer.load(delegateAddr);
+                if (delegate_) {
+                    delegate_.weight = delegate_.weight.minus(signer.weight);
+                    delegateAddr = delegate_.delegateTo!;
+                    delegate_.save();
+                }
+            }
         }
-      }
-      signer.delegateTo = "";
-      signer.save();
+        signer.delegateTo = "";
+        signer.save();
     }
 }
 
@@ -89,7 +89,7 @@ export function handleSignerAdded(event: SignerAdded): void {
                     event.params.signerAddress.toHex()
                 );
                 signerMetadata.name = object.get("name")!.toString();
-                signerMetadata.contactNo = object.get("contactNo")!.toBigInt();
+                signerMetadata.contactNo = object.get("contactNo")!.toString();
                 signerMetadata.email = object.get("email")!.toString();
                 signerMetadata.walletAddress = event.params.signerAddress;
                 signerMetadata.role = object.get("role")!.toString();
@@ -153,8 +153,8 @@ export function handleTransactionCreated(event: TransactionCreated): void {
 }
 
 export function handleTransactionExecuted(event: TransactionExecuted): void {
-  let txn = Transaction.load(event.params.txnId.toString());
-  let approver = Signer.load(event.params.approver.toHex());
+    let txn = Transaction.load(event.params.txnId.toString());
+    let approver = Signer.load(event.params.approver.toHex());
     if (txn && approver) {
         txn.executed = true;
         let tempApprovedBy = txn.approvedBy;
@@ -165,9 +165,7 @@ export function handleTransactionExecuted(event: TransactionExecuted): void {
 
         let wallet = Wallet.load(event.address.toHex());
         if (wallet) {
-            wallet.lockedBalance = wallet.lockedBalance.minus(
-                txn.amount
-            );
+            wallet.lockedBalance = wallet.lockedBalance.minus(txn.amount);
             wallet.save();
         }
         txn.save();
@@ -175,46 +173,50 @@ export function handleTransactionExecuted(event: TransactionExecuted): void {
 }
 
 export function handleWalletCreated(event: WalletCreated): void {
-  let wallet = Wallet.load(event.address.toHex());
-  if(!wallet){
-    wallet = new Wallet(event.address.toHex());
-    wallet.lockedBalance = BigInt.fromString("0");
-    wallet.transactions = [];
-    wallet.signers = []
+    let wallet = Wallet.load(event.address.toHex());
+    if (!wallet) {
+        wallet = new Wallet(event.address.toHex());
+        wallet.lockedBalance = BigInt.fromString("0");
+        wallet.transactions = [];
+        wallet.signers = [];
 
-    let signer = Signer.load(event.params.ownerAddress.toHex());
-    if(!signer){
-        signer = new Signer(event.params.ownerAddress.toHex());
-        signer.address = event.params.ownerAddress;
-        signer.weight = BigInt.fromString("1");
+        let signer = Signer.load(event.params.ownerAddress.toHex());
+        if (!signer) {
+            signer = new Signer(event.params.ownerAddress.toHex());
+            signer.address = event.params.ownerAddress;
+            signer.weight = BigInt.fromString("1");
 
-        let ipfsData = ipfs.cat(event.params.ownerCid.toString());
-        if (ipfsData) {
-            let jsonData = json.fromBytes(ipfsData);
-            let object = jsonData.toObject();
+            let ipfsData = ipfs.cat(event.params.ownerCid.toString());
+            if (ipfsData) {
+                let jsonData = json.fromBytes(ipfsData);
+                let object = jsonData.toObject();
 
-            if (object) {
-                let signerMetadata = new SignerMetadata(
-                    event.params.ownerAddress.toHex()
-                );
-                signerMetadata.name = object.get("name")!.toString();
-                signerMetadata.contactNo = object.get("contactNo")!.toBigInt();
-                signerMetadata.email = object.get("email")!.toString();
-                signerMetadata.walletAddress = event.params.ownerAddress;
-                signerMetadata.role = object.get("role")!.toString();
-                if (object.get("remarks")!.toString()) {
-                    signerMetadata.remarks = object.get("remarks")!.toString();
+                if (object) {
+                    let signerMetadata = new SignerMetadata(
+                        event.params.ownerAddress.toHex()
+                    );
+                    signerMetadata.name = object.get("name")!.toString();
+                    signerMetadata.contactNo = object
+                        .get("contactNo")!
+                        .toString();
+                    signerMetadata.email = object.get("email")!.toString();
+                    signerMetadata.walletAddress = event.params.ownerAddress;
+                    signerMetadata.role = object.get("role")!.toString();
+                    if (object.get("remarks")!.toString()) {
+                        signerMetadata.remarks = object
+                            .get("remarks")!
+                            .toString();
+                    }
+                    signerMetadata.save();
+                    signer.metadata = event.params.ownerAddress.toHex();
                 }
-                signerMetadata.save();
-                signer.metadata = event.params.ownerAddress.toHex();
             }
+            signer.save();
         }
-        signer.save();
+        wallet.owner = event.params.ownerAddress.toHex();
+        let tempSigners = wallet.signers;
+        tempSigners.push(event.params.ownerAddress.toHex());
+        wallet.signers = tempSigners;
+        wallet.save();
     }
-    wallet.owner = event.params.ownerAddress.toHex();
-    let tempSigners = wallet.signers;
-    tempSigners.push(event.params.ownerAddress.toHex());
-    wallet.signers = tempSigners;
-    wallet.save()
-  }
 }

@@ -5,12 +5,12 @@ export type Signer = {
     weight: number;
     delegateTo: string;
     metadata: SignerMetadata;
-    signer: ethers.Signer;
+    signer: ethers.Signer | null;
 };
 
 export type SignerMetadata = {
     name: string;
-    contactNo: number;
+    contactNo: string;
     email: string;
     walletAddress: string;
     role: string;
@@ -23,16 +23,16 @@ export type Transaction = {
     amount: number;
     approval: number;
     executed: boolean;
-    approvedBy: Signer[];
+    approvedBy: string[];
     createdOn: string;
 };
 
 export type Wallet = {
     contractAddress: string;
-    owner: Signer;
+    owner: string;
     signers: Signer[];
     transactions: Transaction[];
-    createdOn: string;
+    // createdOn: string;
     balance: string;
     lockedBalance: string;
 };

@@ -1,27 +1,27 @@
 /* eslint-disable @next/next/no-img-element */
-import React from "react";
+import React, { useState } from "react";
 import makeBlockie from "ethereum-blockies-base64";
 import DropDown from "./DropDown";
+import { useSignerContext } from "../contexts/Signer";
+import { delegate, revokeDelegation } from "../controllers/SignerController";
 import { Signer } from "../utils/types";
 
-type Props = {
-    signer: Signer;
-};
+type Props = { signers: Signer[] };
 
-const LeftPane = ({ signer }: Props) => {
-    return (
+const LeftPane = ({ signers }: Props) => {
+    const { signer } = useSignerContext();
+    const [delegate_, setDelegate] = useState<Signer | null>(null);
+    return signer ? (
         <div className="sticky top-0 col-span-2 h-screen bg-gray-900 px-10  py-20 text-white">
             <div className="flex h-full flex-col items-center justify-center">
                 <div
-                    className="mx-auto h-32 w-32 cursor-pointer overflow-hidden rounded"
+                    className="h-32 w-32 cursor-pointer overflow-hidden rounded"
                     onClick={() => {
                         navigator.clipboard.writeText(signer.address);
                     }}
                 >
                     <img
-                        src={makeBlockie(
-                            "0x4794a6045F66e5E3fcb64d3d0e8a0f77D4df425c"
-                        )}
+                        src={makeBlockie(signer.address)}
                         alt="Signer Blockie Image"
                     />
                 </div>
@@ -47,7 +47,25 @@ const LeftPane = ({ signer }: Props) => {
                         </span>
                     </p>
                 )}
-                <form action="" className="mt-28 w-full">
+                <form
+                    action=""
+                    className="mt-28 w-full"
+                    onSubmit={
+                        signer.delegateTo
+                            ? (e) => {
+                                  e.preventDefault();
+                                  revokeDelegation(signer.signer);
+                              }
+                            : (e) => {
+                                  e.preventDefault();
+                                  if (delegate_)
+                                      delegate(
+                                          signer.signer,
+                                          delegate_.address
+                                      );
+                              }
+                    }
+                >
                     {signer.delegateTo ? (
                         <div className="flex w-full items-center justify-center space-x-5">
                             <span>
@@ -66,14 +84,14 @@ const LeftPane = ({ signer }: Props) => {
                     ) : (
                         <div className="flex w-full space-x-5">
                             <DropDown
-                                menuOptions={[
-                                    { item: "Raghav Goyal" },
-                                    { item: "Vineet Mishra" },
-                                    { item: "Nonit Mittal" },
-                                    { item: "Rohan Lamba" },
-                                ]}
+                                menuOptions={signers.map((signer_) => {
+                                    return {
+                                        item: signer_.metadata.name,
+                                        attribute: signer_,
+                                    };
+                                })}
                                 defaultSelected={0}
-                                setState={() => {}}
+                                setState={setDelegate}
                             />
                             <button type="submit" className="btn-green w-2/5">
                                 <span className="font-medium"> Delegate </span>
@@ -83,6 +101,8 @@ const LeftPane = ({ signer }: Props) => {
                 </form>
             </div>
         </div>
+    ) : (
+        <></>
     );
 };
 

@@ -1,7 +1,7 @@
 import { ApolloClient, InMemoryCache, gql } from "@apollo/client";
 
 const APIURL =
-    "https://thegraph.com/hosted-service/subgraph/nonitmittal/multisig-delegate-wallet";
+    "https://api.thegraph.com/subgraphs/name/nonitmittal/multisig-delegate-wallet";
 
 export async function executeQuery(query: string) {
     const client = new ApolloClient({
