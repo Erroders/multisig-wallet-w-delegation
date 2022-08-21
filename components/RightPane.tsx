@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import React from "react";
 import makeBlockie from "ethereum-blockies-base64";
+import { ethers } from "ethers";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
 import TransactionCard from "./TransactionCard";
@@ -52,13 +53,19 @@ const RightPane = ({ wallet }: Props) => {
                             <div className="mt-8 flex items-center justify-center space-x-16">
                                 <div className="flex flex-col items-center">
                                     <p className="font-mono text-lg font-semibold tracking-tighter">
-                                        {wallet.balance} MATIC
+                                        {ethers.utils.formatUnits(
+                                            wallet.balance
+                                        )}{" "}
+                                        MATIC
                                     </p>
                                     <p className="text-xs">Balance</p>
                                 </div>
                                 <div className="flex flex-col items-center">
                                     <p className="font-mono text-lg font-semibold tracking-tighter">
-                                        {wallet.lockedBalance} MATIC
+                                        {ethers.utils.formatUnits(
+                                            wallet.lockedBalance
+                                        )}{" "}
+                                        MATIC
                                     </p>
                                     <p className="text-xs">Locked Balance</p>
                                 </div>
