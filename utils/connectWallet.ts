@@ -1,14 +1,30 @@
+import type { IUAuthOptions } from "@uauth/web3modal";
 import { ethers } from "ethers";
 import Web3Modal from "web3modal";
+import UAuthSPA from "@uauth/js";
+import * as UAuthWeb3Modal from "./ud_web3modal";
+
+export const uauthOptions: IUAuthOptions = {
+    clientID: "21ddb151-da3b-4762-8604-a50c786d7b82",
+    redirectUri: "http://localhost:3000",
+    scope: "openid wallet"
+  }
 
 const providerOptions = {
-    /* See Provider Options Section */
+    "custom-uauth": {
+        display: UAuthWeb3Modal.display,
+        connector: UAuthWeb3Modal.connector,
+        package: UAuthSPA,
+        options: uauthOptions,
+      }
 };
 
 export async function connect(
     cb: (etherSigner: ethers.Signer | null) => Promise<void>
 ) {
-    const web3Modal = new Web3Modal();
+    const web3Modal = new Web3Modal({providerOptions});
+    UAuthWeb3Modal.registerWeb3Modal(web3Modal)
+
     try {
         const connection = await web3Modal.connect();
         const provider = new ethers.providers.Web3Provider(connection, "any");

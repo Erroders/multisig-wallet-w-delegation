@@ -12,6 +12,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     const handleUpdateSigner = async (signer: ethers.Signer | null) => {
         if (signer) {
             const address = await signer.getAddress();
+            console.log(address);
             const data = await executeQuery(`query{
                 signer(id: "${address.toLowerCase()}"){
                   address
@@ -30,24 +31,28 @@ function MyApp({ Component, pageProps }: AppProps) {
                 }
               }`);
             console.log(data);
-            const signer_: Signer = {
-                address: data.signer.address,
-                weight: data.signer.weight,
-                delegateTo: data.signer.delegateTo
-                    ? data.signer.delegateTo.address
-                    : null,
-                metadata: {
-                    name: data.signer.metadata.name,
-                    contactNo: data.signer.metadata.contactNo,
-                    email: data.signer.metadata.email,
-                    walletAddress: data.signer.metadata.walletAddress,
-                    role: data.signer.metadata.role,
-                    remarks: data.signer.metadata.remarks,
-                },
-                signer: signer,
-            };
-            console.log(signer_);
-            setSigner(signer_);
+            if(data.signer){
+                const signer_: Signer = {
+                    address: data.signer.address,
+                    weight: data.signer.weight,
+                    delegateTo: data.signer.delegateTo
+                        ? data.signer.delegateTo.address
+                        : null,
+                    metadata: {
+                        name: data.signer.metadata.name,
+                        contactNo: data.signer.metadata.contactNo,
+                        email: data.signer.metadata.email,
+                        walletAddress: data.signer.metadata.walletAddress,
+                        role: data.signer.metadata.role,
+                        remarks: data.signer.metadata.remarks,
+                    },
+                    signer: signer,
+                };
+                console.log(signer_);
+                setSigner(signer_);
+            }else{
+                setSigner(null);
+            }
         }
     };
     useEffect(() => {
