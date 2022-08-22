@@ -18,7 +18,3 @@ A multisig wallet is a special wallet contract that releases funds (or any other
 - Hardhat
 - The Graph
 - Remix IDE
-
-## Challenges Faced
-
-Creating a full-stack three-tier application in a day was an overwhelming self-taken task. The core business logic behind this problem is very well created and successfully executed within the given time, however the UI/UX could be enhance several folds in future.
