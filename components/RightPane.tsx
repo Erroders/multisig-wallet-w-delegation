@@ -75,14 +75,14 @@ const RightPane = ({ wallet }: Props) => {
                                     </p>
                                     <p className="text-xs">Signers</p>
                                 </div>
-                                <button
+                                {signer && <button
                                     className="btn-dark"
                                     onClick={() => {
                                         signer && deposit(signer.signer, "0.5");
                                     }}
                                 >
                                     Deposit
-                                </button>
+                                </button>}
                             </div>
                         </div>
                     </div>
