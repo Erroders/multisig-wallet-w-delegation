@@ -127,7 +127,7 @@ contract MultisigWallet {
         _approveTransaction(txnId_, msg.sender);
     }
 
-    function deposit() public payable pure{}
+    function deposit() public payable {}
 
     // private functions -------------------------------------------------
     function _approveTransaction(uint256 txnId_, address approver_) internal {

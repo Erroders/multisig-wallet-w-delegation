@@ -6,9 +6,9 @@ import * as UAuthWeb3Modal from "./ud_web3modal";
 
 export const uauthOptions: IUAuthOptions = {
     clientID: "21ddb151-da3b-4762-8604-a50c786d7b82",
-    redirectUri: "http://localhost:3000",
-    scope: "openid wallet"
-  }
+    redirectUri: "https://multisigwallet-w-delegation.vercel.app/",
+    scope: "openid wallet",
+};
 
 const providerOptions = {
     "custom-uauth": {
@@ -16,14 +16,14 @@ const providerOptions = {
         connector: UAuthWeb3Modal.connector,
         package: UAuthSPA,
         options: uauthOptions,
-      }
+    },
 };
 
 export async function connect(
     cb: (etherSigner: ethers.Signer | null) => Promise<void>
 ) {
-    const web3Modal = new Web3Modal({providerOptions});
-    UAuthWeb3Modal.registerWeb3Modal(web3Modal)
+    const web3Modal = new Web3Modal({ providerOptions });
+    UAuthWeb3Modal.registerWeb3Modal(web3Modal);
 
     try {
         const connection = await web3Modal.connect();
