@@ -14,7 +14,20 @@ A multisig wallet is a special wallet contract that releases funds (or any other
 - Polygon
 - Ethereum
 - NFT.STORAGE(IPFS/Filecoin)
+- Unstoppable Domain
 - Metamask
 - Hardhat
 - The Graph
 - Remix IDE
+
+## Info
+
+- Multisig Wallet with Delegation
+- [Link to working code repository](https://github.com/rg12301/multisig-wallet-w-delegation)
+- [Live Demo Link](https://multisigwallet-w-delegation.vercel.app/)
+- [Video demo]()
+- Person to contact
+  - [Nonit Mittal](mailto:nonitmittal@gmail.com) (NonitMittal#5796)
+  - [Raghav Goyal](mailto:12301raghavgoyal@gmail.com) (Raghav#6141)
+  - [Vineet Mishra](mailto:vineetmishra2510@gmail.com)
+- UD registered email email account - nonitmittal@gmail.com
