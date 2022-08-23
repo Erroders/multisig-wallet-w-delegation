@@ -1,10 +1,15 @@
 import React from "react";
+import { Signer, SignerMetadata } from "../utils/types";
+import { addSigner } from "../controllers/SignerController";
+import { useSignerContext } from "../contexts/Signer";
 // import Navbar from "../components/navbar";
 // import Header from "./Header";
 
 type Props = {};
 
-const addSigner = (props: Props) => {
+const AddSigner = (props: Props) => {
+    const { signer } = useSignerContext();
+
     return (
         <>
             <div className="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
@@ -22,6 +27,26 @@ const addSigner = (props: Props) => {
                     <form
                         action=""
                         className="mt-6 mb-0 space-y-4 rounded-lg p-8 shadow-2xl"
+                        onSubmit={(e: any) => {
+                            e.preventDefault();
+                            const data: SignerMetadata = {
+                                name: e.target.name.value,
+                                contactNo: e.target.number.value,
+                                email: e.target.email.value,
+                                walletAddress: e.target.walletAddress.value,
+                                role: e.target.role.value,
+                                remarks: e.target.remarks.value,
+                            };
+                            const signerData: Signer = {
+                                address: e.target.walletAddress.value,
+                                weight: 0,
+                                delegateTo: "",
+                                metadata: data as SignerMetadata,
+                                signer: null,
+                            };
+
+                            addSigner(signer!.signer, signerData);
+                        }}
                     >
                         <div>
                             <label
@@ -119,7 +144,7 @@ const addSigner = (props: Props) => {
                             <div className="relative mt-1">
                                 <input
                                     type="text"
-                                    id="Role"
+                                    id="role"
                                     className="w-full rounded-lg border-gray-200 p-4 pr-12 text-sm shadow-md"
                                     placeholder="Enter Role"
                                 />
@@ -128,15 +153,15 @@ const addSigner = (props: Props) => {
                         <div>
                             <label
                                 className="text-sm font-medium "
-                                htmlFor="message"
+                                htmlFor="remarks"
                             >
                                 Message
                             </label>
                             <textarea
                                 className="w-full rounded-lg border-gray-200 p-3 text-sm shadow-md"
-                                placeholder="Message"
+                                placeholder="Remarks"
                                 rows={8}
-                                id="message"
+                                id="remarks"
                             ></textarea>
                         </div>
 
@@ -144,7 +169,7 @@ const addSigner = (props: Props) => {
                             type="submit"
                             className="block w-full rounded-lg bg-indigo-600 px-5 py-3 text-sm font-medium text-white"
                         >
-                            Sign in
+                            Add Signer
                         </button>
 
                         <p className="text-center text-sm text-gray-500">
@@ -160,4 +185,4 @@ const addSigner = (props: Props) => {
     );
 };
 
-export default addSigner;
+export default AddSigner;

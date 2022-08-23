@@ -540,6 +540,32 @@ export class DelegateCall__Outputs {
   }
 }
 
+export class DepositCall extends ethereum.Call {
+  get inputs(): DepositCall__Inputs {
+    return new DepositCall__Inputs(this);
+  }
+
+  get outputs(): DepositCall__Outputs {
+    return new DepositCall__Outputs(this);
+  }
+}
+
+export class DepositCall__Inputs {
+  _call: DepositCall;
+
+  constructor(call: DepositCall) {
+    this._call = call;
+  }
+}
+
+export class DepositCall__Outputs {
+  _call: DepositCall;
+
+  constructor(call: DepositCall) {
+    this._call = call;
+  }
+}
+
 export class RevokeDelegationCall extends ethereum.Call {
   get inputs(): RevokeDelegationCall__Inputs {
     return new RevokeDelegationCall__Inputs(this);

@@ -3,7 +3,7 @@ import { useState } from "react";
 
 type Props = {
     menuOptions: {
-        item: string;
+        item: any;
         class?: string;
         attribute?: any;
     }[];
