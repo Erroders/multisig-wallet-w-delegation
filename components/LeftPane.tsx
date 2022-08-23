@@ -84,12 +84,18 @@ const LeftPane = ({ signers }: Props) => {
                     ) : (
                         <div className="flex w-full space-x-5">
                             <DropDown
-                                menuOptions={signers.map((signer_) => {
-                                    return {
-                                        item: signer_.metadata.name,
-                                        attribute: signer_,
-                                    };
-                                })}
+                                menuOptions={signers
+                                    .filter((signer_) => {
+                                        return (
+                                            signer.address != signer_.address
+                                        );
+                                    })
+                                    .map((signer_) => {
+                                        return {
+                                            item: signer_.metadata.name,
+                                            attribute: signer_,
+                                        };
+                                    })}
                                 defaultSelected={0}
                                 setState={setDelegate}
                             />
