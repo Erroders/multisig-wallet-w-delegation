@@ -1,0 +1,42 @@
+specVersion: 0.0.4
+schema:
+  file: schema.graphql
+dataSources:
+  - kind: ethereum
+    name: MultisigWallet
+    network: mumbai
+    source:
+      abi: MultisigWallet
+      address: "0xD5F80a6C0431305c354FCC338627F4b492434Bf3"
+      startBlock: 27706929
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Signer
+        - SignerMetadata
+        - Transaction
+        - Wallet
+      abis:
+        - name: MultisigWallet
+          file: MultisigWallet/abis/MultisigWallet.json
+      eventHandlers:
+        - event: Delegate(indexed address,indexed address)
+          handler: handleDelegate
+        - event: RevokeDelegation(indexed address)
+          handler: handleRevokeDelegation
+        - event: SignerAdded(indexed address,string)
+          handler: handleSignerAdded
+        - event: TransactionApproved(uint256,indexed address)
+          handler: handleTransactionApproved
+        - event: TransactionCreated(uint256,indexed address,uint256)
+          handler: handleTransactionCreated
+        - event: TransactionExecuted(uint256,indexed address)
+          handler: handleTransactionExecuted
+        - event: WalletCreated(indexed address,string)
+          handler: handleWalletCreated
+      file: MultisigWallet/MultisigWallet.wasm
+features:
+  - fullTextSearch
+  - ipfsOnEthereumContracts
