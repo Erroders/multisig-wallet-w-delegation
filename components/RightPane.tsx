@@ -3,6 +3,7 @@ import makeBlockie from "ethereum-blockies-base64";
 import { ethers } from "ethers";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
+import Router from "next/router";
 import { useState } from "react";
 import { useSignerContext } from "../contexts/Signer";
 import {
@@ -48,7 +49,7 @@ const RightPane = ({ wallet }: Props) => {
                 Created {timeAgo.format(new Date())}
                 {/* {timeAgo.format(new Date(wallet.createdOn))} */}
               </span>
-              <div className="mt-8 flex items-center justify-center space-x-16">
+              <div className="mt-8 flex items-center justify-between space-x-16">
                 <div className="flex flex-col items-center">
                   <p className="font-mono text-lg font-semibold tracking-tighter">
                     {ethers.utils.formatUnits(wallet.balance)} MATIC
@@ -67,6 +68,8 @@ const RightPane = ({ wallet }: Props) => {
                   </p>
                   <p className="text-xs">Signers</p>
                 </div>
+              </div>
+              <div className="mt-8 flex items-center justify-start space-x-8">
                 {signer && (
                   <button
                     className="btn-blue"
@@ -75,6 +78,16 @@ const RightPane = ({ wallet }: Props) => {
                     }}
                   >
                     Deposit
+                  </button>
+                )}
+                {signer && (
+                  <button
+                    className="btn-blue"
+                    onClick={() => {
+                      Router.push("/addSigner");
+                    }}
+                  >
+                    Add Signer
                   </button>
                 )}
               </div>
