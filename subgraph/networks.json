@@ -1,8 +1,8 @@
 {
-  "mumbai": {
-    "MultisigWallet": {
-      "address": "0xc7934C07A05cCe68F25d48375da68063ae99c06c",
-      "startBlock": 27706929
+    "mumbai": {
+        "MultisigWallet": {
+            "address": "0xD5F80a6C0431305c354FCC338627F4b492434Bf3",
+            "startBlock": 27706929
+        }
     }
-  }
 }
