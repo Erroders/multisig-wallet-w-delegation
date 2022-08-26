@@ -3,6 +3,7 @@ import makeBlockie from "ethereum-blockies-base64";
 import { ethers } from "ethers";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
+import { useState } from "react";
 import { useSignerContext } from "../contexts/Signer";
 import {
   createTransaction,
@@ -16,6 +17,8 @@ TimeAgo.addLocale(en);
 type Props = { wallet: Wallet };
 
 const RightPane = ({ wallet }: Props) => {
+  const [typeOfToken, setTypeOfToken] = useState(0);
+
   const timeAgo = new TimeAgo("en-US");
   const { signer } = useSignerContext();
   return (
@@ -78,17 +81,50 @@ const RightPane = ({ wallet }: Props) => {
             </div>
           </div>
         </div>
+
         <div className="col-span-2 my-auto px-20">
+          <ul className="mb-2 flex overflow-hidden rounded-lg bg-purple-700 text-center">
+            <li className="flex-1">
+              <div
+                className={
+                  "relative block cursor-pointer rounded-xl p-4 text-sm font-medium" +
+                  (typeOfToken === 0 ? " bg-purple-900 " : " bg-transparent ")
+                }
+                onClick={() => {
+                  setTypeOfToken(0);
+                }}
+              >
+                Crypto
+              </div>
+            </li>
+
+            <li className="flex-1 pl-px">
+              <div
+                className={
+                  "relative block cursor-pointer rounded-lg  p-4 text-sm font-medium" +
+                  (typeOfToken === 1 ? " bg-purple-900 " : " bg-transparent ")
+                }
+                onClick={() => {
+                  setTypeOfToken(1);
+                }}
+              >
+                NFTs
+              </div>
+            </li>
+          </ul>
+
           <form
             className="flex h-full flex-col items-center justify-center"
             onSubmit={(e: any) => {
               e.preventDefault();
               if (signer) {
-                createTransaction(
-                  signer.signer,
-                  e.target.to.value,
-                  e.target.amount.value
-                );
+                if (typeOfToken === 0) {
+                  createTransaction(
+                    signer.signer,
+                    e.target.to.value,
+                    e.target.amount.value
+                  );
+                }
               }
             }}
           >
@@ -98,6 +134,7 @@ const RightPane = ({ wallet }: Props) => {
               className="input my-2"
               placeholder="Address"
             />
+
             <input
               type="text"
               id="amount"
