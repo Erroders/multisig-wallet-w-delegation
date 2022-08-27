@@ -2,7 +2,7 @@ type Signer @entity {
     id: ID!
     address: Bytes!
     weight: BigInt!
-    delegateTo: Signer
+    delegateTo: String
     metadata: SignerMetadata!
     txnCap: BigInt!
 }
