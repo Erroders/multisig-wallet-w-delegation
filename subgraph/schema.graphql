@@ -66,11 +66,32 @@ type ERC1155Transaction @entity {
 
 type Wallet @entity {
     id: ID!
-    lockedBalance: BigInt!
     owner: Signer!
     signers: [Signer!]!
     createdOn: BigInt!
     erc20Transactions: [ERC20Transaction!]
     erc721Transactions: [ERC721Transaction!]
     erc1155Transactions: [ERC1155Transaction!]
+    metadata: WalletMetadata!
+}
+
+type WalletMetadata @entity {
+    id: ID!
+    title: String!
+    description: String!
+}
+
+type ERC20LockedBalance @entity {
+    id: ID!   # wallet_address + contract_address
+    lockedBalance: BigInt!
+}
+
+type ERC721LockedBalance @entity {
+    id: ID!    # wallet_address + contract_address + token_id
+    lockedBool: Boolean!
+}
+
+type ERC1155LockedBalance @entity {
+    id: ID!    # wallet_address + contract_address + token_id
+    lockedBalance: BigInt!
 }
