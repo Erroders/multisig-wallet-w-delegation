@@ -30,8 +30,8 @@ export type ERC20Transaction =  {
     approval: number;
     disapproval: number;
     txnStatus: string;
-    approvedBy: Signer[]
-    disapprovedBy: Signer[]
+    approvedBy: string[]
+    disapprovedBy: string[]
     createdOn: string;
 }
 
@@ -42,8 +42,8 @@ export type ERC721Transaction = {
     approval: number;
     disapproval: number;
     txnStatus: string;
-    approvedBy: Signer[]
-    disapprovedBy: Signer[]
+    approvedBy: string[]
+    disapprovedBy: string[]
     createdOn: string;
 }
 
@@ -55,8 +55,8 @@ export type ERC1155Transaction = {
     approval: number;
     disapproval: number;
     txnStatus: string;
-    approvedBy: Signer[]
-    disapprovedBy: Signer[]
+    approvedBy: string[]
+    disapprovedBy: string[]
     createdOn: string;
 }
 
