@@ -85,6 +85,15 @@ export class Signer extends Entity {
   set metadata(value: string) {
     this.set("metadata", Value.fromString(value));
   }
+
+  get txnCap(): BigInt {
+    let value = this.get("txnCap");
+    return value!.toBigInt();
+  }
+
+  set txnCap(value: BigInt) {
+    this.set("txnCap", Value.fromBigInt(value));
+  }
 }
 
 export class SignerMetadata extends Entity {
@@ -181,7 +190,7 @@ export class SignerMetadata extends Entity {
   }
 }
 
-export class Transaction extends Entity {
+export class ERC20Transaction extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -189,18 +198,20 @@ export class Transaction extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save Transaction entity without an ID");
+    assert(id != null, "Cannot save ERC20Transaction entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.STRING,
-        `Entities of type Transaction must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type ERC20Transaction must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
       );
-      store.set("Transaction", id.toString(), this);
+      store.set("ERC20Transaction", id.toString(), this);
     }
   }
 
-  static load(id: string): Transaction | null {
-    return changetype<Transaction | null>(store.get("Transaction", id));
+  static load(id: string): ERC20Transaction | null {
+    return changetype<ERC20Transaction | null>(
+      store.get("ERC20Transaction", id)
+    );
   }
 
   get id(): string {
@@ -221,6 +232,15 @@ export class Transaction extends Entity {
     this.set("to", Value.fromBytes(value));
   }
 
+  get contractAddr(): Bytes {
+    let value = this.get("contractAddr");
+    return value!.toBytes();
+  }
+
+  set contractAddr(value: Bytes) {
+    this.set("contractAddr", Value.fromBytes(value));
+  }
+
   get amount(): BigInt {
     let value = this.get("amount");
     return value!.toBigInt();
@@ -239,13 +259,22 @@ export class Transaction extends Entity {
     this.set("approval", Value.fromBigInt(value));
   }
 
-  get executed(): boolean {
-    let value = this.get("executed");
-    return value!.toBoolean();
+  get disapproval(): BigInt {
+    let value = this.get("disapproval");
+    return value!.toBigInt();
   }
 
-  set executed(value: boolean) {
-    this.set("executed", Value.fromBoolean(value));
+  set disapproval(value: BigInt) {
+    this.set("disapproval", Value.fromBigInt(value));
+  }
+
+  get txnStatus(): string {
+    let value = this.get("txnStatus");
+    return value!.toString();
+  }
+
+  set txnStatus(value: string) {
+    this.set("txnStatus", Value.fromString(value));
   }
 
   get approvedBy(): Array<string> | null {
@@ -262,6 +291,294 @@ export class Transaction extends Entity {
       this.unset("approvedBy");
     } else {
       this.set("approvedBy", Value.fromStringArray(<Array<string>>value));
+    }
+  }
+
+  get disapprovedBy(): Array<string> | null {
+    let value = this.get("disapprovedBy");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set disapprovedBy(value: Array<string> | null) {
+    if (!value) {
+      this.unset("disapprovedBy");
+    } else {
+      this.set("disapprovedBy", Value.fromStringArray(<Array<string>>value));
+    }
+  }
+
+  get createdOn(): BigInt {
+    let value = this.get("createdOn");
+    return value!.toBigInt();
+  }
+
+  set createdOn(value: BigInt) {
+    this.set("createdOn", Value.fromBigInt(value));
+  }
+}
+
+export class ERC721Transaction extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save ERC721Transaction entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type ERC721Transaction must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("ERC721Transaction", id.toString(), this);
+    }
+  }
+
+  static load(id: string): ERC721Transaction | null {
+    return changetype<ERC721Transaction | null>(
+      store.get("ERC721Transaction", id)
+    );
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get to(): Bytes {
+    let value = this.get("to");
+    return value!.toBytes();
+  }
+
+  set to(value: Bytes) {
+    this.set("to", Value.fromBytes(value));
+  }
+
+  get contractAddr(): Bytes {
+    let value = this.get("contractAddr");
+    return value!.toBytes();
+  }
+
+  set contractAddr(value: Bytes) {
+    this.set("contractAddr", Value.fromBytes(value));
+  }
+
+  get tokenId(): BigInt {
+    let value = this.get("tokenId");
+    return value!.toBigInt();
+  }
+
+  set tokenId(value: BigInt) {
+    this.set("tokenId", Value.fromBigInt(value));
+  }
+
+  get approval(): BigInt {
+    let value = this.get("approval");
+    return value!.toBigInt();
+  }
+
+  set approval(value: BigInt) {
+    this.set("approval", Value.fromBigInt(value));
+  }
+
+  get disapproval(): BigInt {
+    let value = this.get("disapproval");
+    return value!.toBigInt();
+  }
+
+  set disapproval(value: BigInt) {
+    this.set("disapproval", Value.fromBigInt(value));
+  }
+
+  get txnStatus(): string {
+    let value = this.get("txnStatus");
+    return value!.toString();
+  }
+
+  set txnStatus(value: string) {
+    this.set("txnStatus", Value.fromString(value));
+  }
+
+  get approvedBy(): Array<string> | null {
+    let value = this.get("approvedBy");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set approvedBy(value: Array<string> | null) {
+    if (!value) {
+      this.unset("approvedBy");
+    } else {
+      this.set("approvedBy", Value.fromStringArray(<Array<string>>value));
+    }
+  }
+
+  get disapprovedBy(): Array<string> | null {
+    let value = this.get("disapprovedBy");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set disapprovedBy(value: Array<string> | null) {
+    if (!value) {
+      this.unset("disapprovedBy");
+    } else {
+      this.set("disapprovedBy", Value.fromStringArray(<Array<string>>value));
+    }
+  }
+
+  get createdOn(): BigInt {
+    let value = this.get("createdOn");
+    return value!.toBigInt();
+  }
+
+  set createdOn(value: BigInt) {
+    this.set("createdOn", Value.fromBigInt(value));
+  }
+}
+
+export class ERC1155Transaction extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save ERC1155Transaction entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type ERC1155Transaction must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("ERC1155Transaction", id.toString(), this);
+    }
+  }
+
+  static load(id: string): ERC1155Transaction | null {
+    return changetype<ERC1155Transaction | null>(
+      store.get("ERC1155Transaction", id)
+    );
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get to(): Bytes {
+    let value = this.get("to");
+    return value!.toBytes();
+  }
+
+  set to(value: Bytes) {
+    this.set("to", Value.fromBytes(value));
+  }
+
+  get contractAddr(): Bytes {
+    let value = this.get("contractAddr");
+    return value!.toBytes();
+  }
+
+  set contractAddr(value: Bytes) {
+    this.set("contractAddr", Value.fromBytes(value));
+  }
+
+  get tokenId(): BigInt {
+    let value = this.get("tokenId");
+    return value!.toBigInt();
+  }
+
+  set tokenId(value: BigInt) {
+    this.set("tokenId", Value.fromBigInt(value));
+  }
+
+  get amount(): BigInt {
+    let value = this.get("amount");
+    return value!.toBigInt();
+  }
+
+  set amount(value: BigInt) {
+    this.set("amount", Value.fromBigInt(value));
+  }
+
+  get approval(): BigInt {
+    let value = this.get("approval");
+    return value!.toBigInt();
+  }
+
+  set approval(value: BigInt) {
+    this.set("approval", Value.fromBigInt(value));
+  }
+
+  get disapproval(): BigInt {
+    let value = this.get("disapproval");
+    return value!.toBigInt();
+  }
+
+  set disapproval(value: BigInt) {
+    this.set("disapproval", Value.fromBigInt(value));
+  }
+
+  get txnStatus(): string {
+    let value = this.get("txnStatus");
+    return value!.toString();
+  }
+
+  set txnStatus(value: string) {
+    this.set("txnStatus", Value.fromString(value));
+  }
+
+  get approvedBy(): Array<string> | null {
+    let value = this.get("approvedBy");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set approvedBy(value: Array<string> | null) {
+    if (!value) {
+      this.unset("approvedBy");
+    } else {
+      this.set("approvedBy", Value.fromStringArray(<Array<string>>value));
+    }
+  }
+
+  get disapprovedBy(): Array<string> | null {
+    let value = this.get("disapprovedBy");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set disapprovedBy(value: Array<string> | null) {
+    if (!value) {
+      this.unset("disapprovedBy");
+    } else {
+      this.set("disapprovedBy", Value.fromStringArray(<Array<string>>value));
     }
   }
 
@@ -306,15 +623,6 @@ export class Wallet extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get lockedBalance(): BigInt {
-    let value = this.get("lockedBalance");
-    return value!.toBigInt();
-  }
-
-  set lockedBalance(value: BigInt) {
-    this.set("lockedBalance", Value.fromBigInt(value));
-  }
-
   get owner(): string {
     let value = this.get("owner");
     return value!.toString();
@@ -333,8 +641,17 @@ export class Wallet extends Entity {
     this.set("signers", Value.fromStringArray(value));
   }
 
-  get transactions(): Array<string> | null {
-    let value = this.get("transactions");
+  get createdOn(): BigInt {
+    let value = this.get("createdOn");
+    return value!.toBigInt();
+  }
+
+  set createdOn(value: BigInt) {
+    this.set("createdOn", Value.fromBigInt(value));
+  }
+
+  get erc20Transactions(): Array<string> | null {
+    let value = this.get("erc20Transactions");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
@@ -342,11 +659,242 @@ export class Wallet extends Entity {
     }
   }
 
-  set transactions(value: Array<string> | null) {
+  set erc20Transactions(value: Array<string> | null) {
     if (!value) {
-      this.unset("transactions");
+      this.unset("erc20Transactions");
     } else {
-      this.set("transactions", Value.fromStringArray(<Array<string>>value));
+      this.set(
+        "erc20Transactions",
+        Value.fromStringArray(<Array<string>>value)
+      );
     }
+  }
+
+  get erc721Transactions(): Array<string> | null {
+    let value = this.get("erc721Transactions");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set erc721Transactions(value: Array<string> | null) {
+    if (!value) {
+      this.unset("erc721Transactions");
+    } else {
+      this.set(
+        "erc721Transactions",
+        Value.fromStringArray(<Array<string>>value)
+      );
+    }
+  }
+
+  get erc1155Transactions(): Array<string> | null {
+    let value = this.get("erc1155Transactions");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set erc1155Transactions(value: Array<string> | null) {
+    if (!value) {
+      this.unset("erc1155Transactions");
+    } else {
+      this.set(
+        "erc1155Transactions",
+        Value.fromStringArray(<Array<string>>value)
+      );
+    }
+  }
+
+  get metadata(): string {
+    let value = this.get("metadata");
+    return value!.toString();
+  }
+
+  set metadata(value: string) {
+    this.set("metadata", Value.fromString(value));
+  }
+}
+
+export class WalletMetadata extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save WalletMetadata entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type WalletMetadata must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("WalletMetadata", id.toString(), this);
+    }
+  }
+
+  static load(id: string): WalletMetadata | null {
+    return changetype<WalletMetadata | null>(store.get("WalletMetadata", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get title(): string {
+    let value = this.get("title");
+    return value!.toString();
+  }
+
+  set title(value: string) {
+    this.set("title", Value.fromString(value));
+  }
+
+  get description(): string {
+    let value = this.get("description");
+    return value!.toString();
+  }
+
+  set description(value: string) {
+    this.set("description", Value.fromString(value));
+  }
+}
+
+export class ERC20LockedBalance extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save ERC20LockedBalance entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type ERC20LockedBalance must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("ERC20LockedBalance", id.toString(), this);
+    }
+  }
+
+  static load(id: string): ERC20LockedBalance | null {
+    return changetype<ERC20LockedBalance | null>(
+      store.get("ERC20LockedBalance", id)
+    );
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get lockedBalance(): BigInt {
+    let value = this.get("lockedBalance");
+    return value!.toBigInt();
+  }
+
+  set lockedBalance(value: BigInt) {
+    this.set("lockedBalance", Value.fromBigInt(value));
+  }
+}
+
+export class ERC721LockedBalance extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save ERC721LockedBalance entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type ERC721LockedBalance must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("ERC721LockedBalance", id.toString(), this);
+    }
+  }
+
+  static load(id: string): ERC721LockedBalance | null {
+    return changetype<ERC721LockedBalance | null>(
+      store.get("ERC721LockedBalance", id)
+    );
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get lockedBool(): boolean {
+    let value = this.get("lockedBool");
+    return value!.toBoolean();
+  }
+
+  set lockedBool(value: boolean) {
+    this.set("lockedBool", Value.fromBoolean(value));
+  }
+}
+
+export class ERC1155LockedBalance extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save ERC1155LockedBalance entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type ERC1155LockedBalance must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("ERC1155LockedBalance", id.toString(), this);
+    }
+  }
+
+  static load(id: string): ERC1155LockedBalance | null {
+    return changetype<ERC1155LockedBalance | null>(
+      store.get("ERC1155LockedBalance", id)
+    );
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get lockedBalance(): BigInt {
+    let value = this.get("lockedBalance");
+    return value!.toBigInt();
+  }
+
+  set lockedBalance(value: BigInt) {
+    this.set("lockedBalance", Value.fromBigInt(value));
   }
 }
