@@ -17,6 +17,8 @@ export function handleWalletCreated(event: WalletCreated): void {
         wallet.erc20Transactions = [];
         wallet.erc721Transactions = [];
         wallet.erc1155Transactions = [];
+        wallet.signers = []
+
         let ipfsData = ipfs.cat(event.params.walletCid.toString());
         if (ipfsData) {
             let jsonData = json.fromBytes(ipfsData);

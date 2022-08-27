@@ -1,7 +1,17 @@
 import axios from "axios";
 import { executeQuery } from "./apolloClient";
 import { getIPFSUrl } from "./getIPFSUrl";
-import { ERC20Token, ERC721Token, ERC1155Token, Wallet, Signer, ERC20Transaction, ERC721Transaction, ERC1155Transaction, WalletMetadata } from "./types";
+import {
+    ERC20Token,
+    ERC721Token,
+    ERC1155Token,
+    Wallet,
+    Signer,
+    ERC20Transaction,
+    ERC721Transaction,
+    ERC1155Transaction,
+    WalletMetadata,
+} from "./types";
 
 const chainId = 80001;
 
@@ -191,9 +201,11 @@ async function getTokenData(walletAddress: string): Promise<any> {
             erc20Tokens.push(erc20Token);
         }
     }
-    return{
-      erc20Tokens, erc721Tokens, erc1155Tokens
-    }
+    return {
+        erc20Tokens,
+        erc721Tokens,
+        erc1155Tokens,
+    };
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -201,8 +213,9 @@ async function getTokenData(walletAddress: string): Promise<any> {
 // - fetchWallets(login signer address);  // don not return everything return (walletaddr, name, desc, signers[])
 export async function fetchWallets(signer: Signer): Promise<Wallet[]> {
     const query = `query{
-        wallets(orderBy:createdOn, where:{owner:"${signer.address}"}){
+        wallets(orderBy:createdOn, where:{owner_contains:"${signer.address.toLowerCase()}"}){
           id
+          createdOn
           signers{
             id
           }
@@ -213,6 +226,8 @@ export async function fetchWallets(signer: Signer): Promise<Wallet[]> {
         }
       }`;
     const data = await executeQuery(query);
+
+    console.log(data);
     const wallets = data.wallets as any[];
     return wallets.map((wallet_) => {
         const wallet: Wallet = {
@@ -233,8 +248,8 @@ export async function fetchWallets(signer: Signer): Promise<Wallet[]> {
 }
 
 // - fetchWallet(walletaddr) // return Wallet everrything
-export async function fetchWallet(walletAddr:string) : Promise<Wallet | null> {
-  const query = `query{
+export async function fetchWallet(walletAddr: string): Promise<Wallet | null> {
+    const query = `query{
     wallet(id:"${walletAddr}"){
       id
       owner{
@@ -309,26 +324,31 @@ export async function fetchWallet(walletAddr:string) : Promise<Wallet | null> {
       }
     }
   }`;
-  const data = await executeQuery(query);
-  if(data.wallet){
-    const {erc20Tokens, erc721Tokens, erc1155Tokens} = await getTokenData(walletAddr);
-     const wallet_ : Wallet = {
-      contractAddress: data.wallet.id,
-      owner: data.wallet.owner as Signer,
-      signers: data.wallet.signers as Signer[],
-      erc20Transactions: data.wallet.erc20Transactions as ERC20Transaction[],
-      erc721Transactions: data.wallet.erc721Transactions as ERC721Transaction[],
-      erc1155Transactions: data.wallet.erc115Transactions as ERC1155Transaction[],
-      createdOn: data.wallet.createdOn,
-      metadata: data.wallet.metadata as WalletMetadata,
-      erc20tokens: erc20Tokens,
-      erc721tokens: erc721Tokens, 
-      erc1155tokens: erc1155Tokens
-     }
-     return wallet_;
-  }else{
-    return null;
-  }
+    const data = await executeQuery(query);
+    if (data.wallet) {
+        const { erc20Tokens, erc721Tokens, erc1155Tokens } = await getTokenData(
+            walletAddr
+        );
+        const wallet_: Wallet = {
+            contractAddress: data.wallet.id,
+            owner: data.wallet.owner as Signer,
+            signers: data.wallet.signers as Signer[],
+            erc20Transactions: data.wallet
+                .erc20Transactions as ERC20Transaction[],
+            erc721Transactions: data.wallet
+                .erc721Transactions as ERC721Transaction[],
+            erc1155Transactions: data.wallet
+                .erc115Transactions as ERC1155Transaction[],
+            createdOn: data.wallet.createdOn,
+            metadata: data.wallet.metadata as WalletMetadata,
+            erc20tokens: erc20Tokens,
+            erc721tokens: erc721Tokens,
+            erc1155tokens: erc1155Tokens,
+        };
+        return wallet_;
+    } else {
+        return null;
+    }
 }
 
 // - getSigner(signer addrress) // return signer everrything

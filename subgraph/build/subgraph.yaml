@@ -20,11 +20,11 @@ dataSources:
         - WalletMetadata
       abis:
         - name: WalletCreator
-          file: WalletCreator\abis\WalletCreator.json
+          file: WalletCreator/abis/WalletCreator.json
       eventHandlers:
         - event: WalletCreated(indexed address,indexed address,string,string)
           handler: handleWalletCreated
-      file: WalletCreator\WalletCreator.wasm
+      file: WalletCreator/WalletCreator.wasm
 templates:
   - kind: ethereum/contract
     name: MultisigWallet
@@ -35,7 +35,7 @@ templates:
       kind: ethereum/events
       apiVersion: 0.0.6
       language: wasm/assemblyscript
-      file: templates\MultisigWallet\MultisigWallet.wasm
+      file: templates/MultisigWallet/MultisigWallet.wasm
       entities:
         - Signer
         - SignerMetadata
@@ -48,7 +48,7 @@ templates:
         - Wallet
       abis:
         - name: MultisigWallet
-          file: MultisigWallet\abis\MultisigWallet.json
+          file: MultisigWallet/abis/MultisigWallet.json
       eventHandlers:
         - event: Delegate(indexed address,indexed address)
           handler: handleDelegate
