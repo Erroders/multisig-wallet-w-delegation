@@ -17,9 +17,9 @@ const TransactionsHistoryPage = ({
         (showAddSignerBox ? " hidden " : "")
       }
     >
-      {wallet.transactions.map((transaction) => {
+      {/* {wallet.transactions.map((transaction) => {
         return <TransactionCard key={transaction.id} txn={transaction} />;
-      })}
+      })} */}
     </section>
   );
 };
