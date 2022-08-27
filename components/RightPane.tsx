@@ -43,7 +43,7 @@ const RightPane = ({ wallet }: Props) => {
         signer={signer}
       />
       <div className={showAddSignerBox ? " hidden " : ""}>
-        <ul className="mx-10 my-10 mb-2 flex overflow-hidden rounded-lg bg-gray-300 text-center">
+        <ul className="mx-28 my-10 mb-2 flex overflow-hidden rounded-lg bg-gray-300 text-center">
           <li className="flex-1">
             <div
               className={

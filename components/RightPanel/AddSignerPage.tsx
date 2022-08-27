@@ -19,7 +19,7 @@ const AddSignerPage = ({
     <>
       <section
         className={
-          "flex flex-col space-y-3 bg-gray-100 px-10 py-10" +
+          "flex flex-col space-y-3 bg-gray-100 px-32 py-10" +
           (showAddSignerBox ? "" : " hidden ")
         }
       >
@@ -61,7 +61,7 @@ const AddSignerPage = ({
             addSigner(signer!.signer, signerData);
           }}
         >
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-10">
             <div>
               <label htmlFor="name" className="text-sm font-medium">
                 Name
@@ -93,7 +93,7 @@ const AddSignerPage = ({
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-10">
             <div>
               <label htmlFor="address" className="text-sm font-medium">
                 Wallet Address
@@ -120,7 +120,7 @@ const AddSignerPage = ({
                   id="txnCapCheckbox"
                   name="txnCapCheckbox"
                   value="txnCapCheckbox"
-                  className="ml-1 mr-4 w-5 "
+                  className="ml-4 mr-6 w-5 "
                   onChange={(e) => {
                     setTxnCapCheckboxValue(e.currentTarget.checked);
                   }}
@@ -138,7 +138,7 @@ const AddSignerPage = ({
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-10">
             <div>
               <label htmlFor="email" className="text-sm font-medium">
                 Email
