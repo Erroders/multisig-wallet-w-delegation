@@ -4,92 +4,105 @@ import { useEffect, useState } from "react";
 import LeftPane from "../components/LeftPane";
 import RightPane from "../components/RightPane";
 import { useSignerContext } from "../contexts/Signer";
-import { executeQuery } from "../utils/apolloClient";
-import { Signer, Wallet } from "../utils/types";
+import { Wallet } from "../utils/types";
+import SignerProfile from "../components/SignerProfile";
+import DropDown from "../components/DropDown";
+import { revokeDelegation, delegate } from "../controllers/SignerController";
 
 const Home: NextPage = () => {
-  const [wallet, setWallet] = useState<Wallet | null>(null);
-  const { signer } = useSignerContext();
-  useEffect(() => {
-    const getWalletData = async () => {
-      let data = await executeQuery(`query{
-                wallets{
-                  id
-                  lockedBalance
-                  owner{
-                    address
-                  }
-                  signers{
-                    address
-                    weight
-                    delegateTo{
-                        address
-                    }
-                    metadata{
-                        name
-                        contactNo
-                        email
-                        role
-                        remarks
-                        walletAddress
-                    }
-                  }
-                  transactions(orderBy: id, orderDirection:desc ){
-                    id
-                    to
-                    amount
-                    approval
-                    executed
-                    createdOn
-                    approvedBy{
-                      address
-                    }
-                  }
-                }
-              }`);
-      data = data.wallets[0];
-      console.log(data);
-      const balance = await signer?.signer?.provider?.getBalance(data.id);
-      const wallet_: Wallet = {
-        contractAddress: data.id,
-        owner: data.owner.address,
-        signers: data.signers ? (data.signers as Signer[]) : [],
-        // transactions: data.transactions
-        //   ? (data.transactions as Transaction[])
-        //   : [],
-        // TODO: Remove hardcoded values
-        createdOn: "aaa",
-        erc1155Transactions: [],
-        erc20Transactions: [],
-        erc721Transactions: [],
-        balance: balance?.toString() || "0",
-        lockedBalance: data.lockedBalance,
-      };
-      console.log(wallet_);
-      setWallet(wallet_);
-    };
-    getWalletData();
-  }, [signer]);
+    const [wallets, setWallets] = useState<Wallet[]>([]);
+    const { signer } = useSignerContext();
+    useEffect(() => {
+        fetchWallets(signer).then((wallets_) => {
+            setWallets(wallets_);
+        });
+    }, [signer]);
 
-  return wallet ? (
-    <div>
-      <Head>
-        <title>Multisig Wallet with Delegation</title>
-        <meta name="description" content="" />
-        {/* <link rel="icon" href="/favicon.ico" /> */}
-      </Head>
+    return (
+        <div>
+            <Head>
+                <title>Multisig Wallet with Delegation</title>
+                <meta name="description" content="" />
+                {/* <link rel="icon" href="/favicon.ico" /> */}
+            </Head>
 
-      <main className="grid grid-cols-6">
-        <LeftPane signers={wallet.signers} />
-        <RightPane wallet={wallet} />
-        {/* <WalletPage /> */}
-      </main>
+            <main className="grid grid-cols-6">
+                <LeftPane>
+                    <SignerProfile signer={signer} />
+                    {signer && (
+                        <form
+                            action=""
+                            className="mt-28 w-full"
+                            onSubmit={
+                                signer.delegateTo
+                                    ? (e) => {
+                                          e.preventDefault();
+                                          revokeDelegation(signer.signer);
+                                      }
+                                    : (e) => {
+                                          e.preventDefault();
+                                          if (delegate_)
+                                              delegate(
+                                                  signer.signer,
+                                                  delegate_.address
+                                              );
+                                      }
+                            }
+                        >
+                            {signer.delegateTo ? (
+                                <div className="flex w-full items-center justify-center space-x-5">
+                                    <span>
+                                        Delegated to&nbsp;
+                                        <span className="font-bold">
+                                            {signer.delegateTo}
+                                        </span>
+                                    </span>
+                                    <button
+                                        type="submit"
+                                        className="btn-red w-2/5 font-medium"
+                                    >
+                                        Revoke Delegation
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="flex w-full space-x-5">
+                                    <DropDown
+                                        menuOptions={signers
+                                            .filter((signer_) => {
+                                                return (
+                                                    signer.address !=
+                                                    signer_.address
+                                                );
+                                            })
+                                            .map((signer_) => {
+                                                return {
+                                                    item: signer_.metadata.name,
+                                                    attribute: signer_,
+                                                };
+                                            })}
+                                        defaultSelected={0}
+                                        setState={setDelegate}
+                                    />
+                                    <button
+                                        type="submit"
+                                        className="btn-green w-2/5"
+                                    >
+                                        <span className="font-medium">
+                                            {" "}
+                                            Delegate{" "}
+                                        </span>
+                                    </button>
+                                </div>
+                            )}
+                        </form>
+                    )}
+                </LeftPane>
+                <RightPane>{wallets.length > 0 ? <></> : <></>}</RightPane>
+            </main>
 
-      <footer></footer>
-    </div>
-  ) : (
-    <></>
-  );
+            <footer></footer>
+        </div>
+    );
 };
 
 export default Home;
