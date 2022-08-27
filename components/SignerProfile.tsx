@@ -23,12 +23,12 @@ const SignerProfile = ({ signer }: Props) => {
                 {signer.address}
             </span>
             <span className="text-2xl font-semibold tracking-wider">
-                {signer.metadata.name}
+                {signer.metadata?.name}
             </span>
-            <span className="mt-2">{signer.metadata.role}</span>
+            <span className="mt-2">{signer.metadata?.role}</span>
             {/* <span className="mx-4 ">{signer.metadata.contactNo}</span>
                 <span className="">{signer.metadata.email}</span> */}
-            {signer.metadata.remarks && (
+            {signer.metadata?.remarks && (
                 <p className="mt-5 mb-2 flex max-w-sm gap-1 pb-2 text-gray-200">
                     <span className="h-min transform self-start text-4xl transition-transform delay-200 group-hover:-translate-y-2">
                         “

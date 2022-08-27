@@ -2,10 +2,10 @@ import { ethers } from "ethers";
 
 export type Signer = {
     address: string;
-    weight: number;
-    delegateTo: string;
-    metadata: SignerMetadata;
-    txnCap: number,
+    weight?: number;
+    delegateTo?: string;
+    metadata?: SignerMetadata;
+    txnCap?: number,
     signer: ethers.Signer | null;
 };
 
