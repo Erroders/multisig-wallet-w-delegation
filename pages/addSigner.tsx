@@ -43,6 +43,7 @@ const AddSigner = (props: Props) => {
                                 delegateTo: "",
                                 metadata: data as SignerMetadata,
                                 signer: null,
+                                txnCap: 0
                             };
 
                             addSigner(signer!.signer, signerData);
