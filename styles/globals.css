@@ -26,6 +26,9 @@
 .btn-blue {
     @apply inline-block rounded bg-indigo-600 px-8 py-3 text-sm font-medium text-white transition hover:scale-110 hover:shadow-xl focus:outline-none focus:ring active:bg-indigo-500
 }
+.btn-blue-1 {
+    @apply inline-block rounded bg-indigo-600 px-8 py-3 text-lg font-medium text-white transition hover:scale-110 hover:shadow-xl focus:outline-none focus:ring active:bg-indigo-500
+}
 
 .btn-green {
     @apply inline-block rounded bg-lime-600 px-8 py-3 text-sm font-medium text-white transition hover:scale-110 hover:shadow-xl focus:outline-none focus:ring active:bg-lime-500
