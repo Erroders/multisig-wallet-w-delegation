@@ -5,6 +5,7 @@ export type Signer = {
     weight: number;
     delegateTo: string;
     metadata: SignerMetadata;
+    txnCap: number,
     signer: ethers.Signer | null;
 };
 
@@ -17,22 +18,51 @@ export type SignerMetadata = {
     remarks: string;
 };
 
-export type Transaction = {
-    id: string;
+export type ERC20Transaction =  {
     to: string;
+    contractAddr: string;
     amount: number;
     approval: number;
-    executed: boolean;
-    approvedBy: string[];
+    disapproval: number;
+    txnStatus: string;
+    approvedBy: Signer[]
+    disapprovedBy: Signer[]
     createdOn: string;
-};
+}
+
+export type ERC721Transaction = {
+    to: string;
+    contractAddr: string;
+    tokenID: number;
+    approval: number;
+    disapproval: number;
+    txnStatus: string;
+    approvedBy: Signer[]
+    disapprovedBy: Signer[]
+    createdOn: string;
+}
+
+export type ERC1155Transaction = {
+    to: string;
+    contractAddr: string;
+    tokenID: number;
+    amount: number;
+    approval: number;
+    disapproval: number;
+    txnStatus: string;
+    approvedBy: Signer[]
+    disapprovedBy: Signer[]
+    createdOn: string;
+}
 
 export type Wallet = {
     contractAddress: string;
-    owner: string;
+    owner: Signer;
     signers: Signer[];
-    transactions: Transaction[];
-    // createdOn: string;
+    erc20Transactions: ERC20Transaction[]
+    erc721Transactions: ERC721Transaction[]
+    erc1155Transactions: ERC1155Transaction[]
+    createdOn: string;
     balance: string;
     lockedBalance: string;
 };
