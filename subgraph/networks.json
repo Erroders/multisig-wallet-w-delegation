@@ -1,8 +1,8 @@
 {
     "mumbai": {
-        "MultisigWallet": {
-            "address": "0xD5F80a6C0431305c354FCC338627F4b492434Bf3",
-            "startBlock": 27706929
+        "WalletCreator": {
+            "address": "0x3ebB1A1D4d23e7bB65960b6EcC2E1048F61b4Ffd",
+            "startBlock": 27798117
         }
     }
 }

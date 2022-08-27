@@ -18,6 +18,11 @@ export type SignerMetadata = {
     remarks: string;
 };
 
+export type WalletMetadata = {
+    title: string;
+    description: string;
+};
+
 export type ERC20Transaction =  {
     to: string;
     contractAddr: string;
@@ -63,6 +68,42 @@ export type Wallet = {
     erc721Transactions: ERC721Transaction[]
     erc1155Transactions: ERC1155Transaction[]
     createdOn: string;
-    balance: string;
-    lockedBalance: string;
+    metadata: WalletMetadata;
+    erc20tokens: ERC20Token[];
+    erc721tokens: ERC721Token[];
+    erc1155tokens: ERC1155Token[];
 };
+
+export type ERC20Token = {
+    balance: number;
+    lockedBalance: number;
+    contractName: string;
+    contractTickerSymbol: string;
+    contractAddr: string;
+    logoUrl: string;
+    decimals: number;
+    quoteRate: number;
+}
+
+export type ERC721Token = {
+    contractName: string;
+    contractAddr: string;
+    contractTickerSymbol: string;
+    nftName: string;
+    description: string;
+    url: string;
+    tokenId: number;
+    locked: boolean;
+}
+
+export type ERC1155Token = {
+    contractName: string;
+    contractAddr: string;
+    contractTickerSymbol: string;
+    nftName: string;
+    description: string;
+    tokenBalance: number;
+    url: string;
+    tokenId: number;
+    lockedBalance: number;
+}
