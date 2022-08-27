@@ -1,35 +1,76 @@
 type Signer @entity {
-  id: ID!
-  address: Bytes!
-  weight: BigInt!
-  delegateTo: Signer
-  metadata: SignerMetadata!
+    id: ID!
+    address: Bytes!
+    weight: BigInt!
+    delegateTo: Signer
+    metadata: SignerMetadata!
+    txnCap: BigInt!
 }
 
 type SignerMetadata @entity {
-  id: ID!
-  name: String!
-  contactNo: BigInt!
-  email: String!
-  walletAddress: Bytes!
-  role: String!
-  remarks: String
+    id: ID!
+    name: String!
+    contactNo: String!
+    email: String!
+    walletAddress: Bytes!
+    role: String!
+    remarks: String
 }
 
-type Transaction @entity {
-  id: ID!
-  to: Bytes!
-  amount: BigInt!
-  approval: BigInt!
-  executed: Boolean!
-  approvedBy: [Signer!]
-  createdOn: BigInt!
+enum TransactionStatus {
+    CREATED
+    WAITING_APPROVAL
+    CANCELLED
+    EXECUTED
+}
+
+type ERC20Transaction @entity {
+    id: ID!
+    to: Bytes!
+    contractAddr: Bytes!
+    amount: BigInt!
+    approval: BigInt!
+    disapproval: BigInt!
+    txnStatus: TransactionStatus!
+    approvedBy: [Signer!]
+    disapprovedBy: [Signer!]
+    createdOn: BigInt!
+}
+
+type ERC721Transaction @entity {
+    id: ID!
+    to: Bytes!
+    contractAddr: Bytes!
+    tokenId: BigInt!
+    approval: BigInt!
+    disapproval: BigInt!
+    txnStatus: TransactionStatus!
+    approvedBy: [Signer!]
+    disapprovedBy: [Signer!]
+    createdOn: BigInt!
+}
+
+type ERC1155Transaction @entity {
+    id: ID!
+    to: Bytes!
+    contractAddr: Bytes!
+    tokenId: BigInt!
+    amount: BigInt!
+    approval: BigInt!
+    disapproval: BigInt!
+    txnStatus: TransactionStatus!
+    approvedBy: [Signer!]
+    disapprovedBy: [Signer!]
+    createdOn: BigInt!
 }
 
 type Wallet @entity {
-  id: ID!
-  lockedBalance: BigInt!
-  owner: Signer!
-  signers: [Signer!]!
-  transactions: [Transaction!]
+    id: ID!
+    lockedBalance: BigInt!
+    owner: Signer!
+    signers: [Signer!]!
+    createdOn: BigInt!
+    erc20Transactions: [ERC20Transaction!]
+    erc721Transactions: [ERC721Transaction!]
+    erc1155Transactions: [ERC1155Transaction!]
 }

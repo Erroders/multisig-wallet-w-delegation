@@ -127,13 +127,13 @@ export class SignerMetadata extends Entity {
     this.set("name", Value.fromString(value));
   }
 
-  get contactNo(): BigInt {
+  get contactNo(): string {
     let value = this.get("contactNo");
-    return value!.toBigInt();
+    return value!.toString();
   }
 
-  set contactNo(value: BigInt) {
-    this.set("contactNo", Value.fromBigInt(value));
+  set contactNo(value: string) {
+    this.set("contactNo", Value.fromString(value));
   }
 
   get email(): string {

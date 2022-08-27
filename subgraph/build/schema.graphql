@@ -9,7 +9,7 @@ type Signer @entity {
 type SignerMetadata @entity {
   id: ID!
   name: String!
-  contactNo: BigInt!
+  contactNo: String!
   email: String!
   walletAddress: Bytes!
   role: String!
