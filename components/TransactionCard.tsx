@@ -3,6 +3,7 @@ import makeBlockie from "ethereum-blockies-base64";
 import { ethers } from "ethers";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
+import ReactTooltip from "react-tooltip";
 import { useSignerContext } from "../contexts/Signer";
 import { approveTransaction } from "../controllers/TransactionController";
 import { Transaction } from "../utils/types";
@@ -72,19 +73,24 @@ const TransactionCard = ({ txn }: Props) => {
         <div className="flex space-x-2">
           {txn.approvedBy.map((signer_: any) => {
             return (
-              <div
-                key={signer_.address}
-                className="h-8 w-8 cursor-pointer self-start overflow-hidden rounded"
-              >
-                <img
-                  src={makeBlockie(signer_.address)}
-                  alt="Approver blockie image"
-                />
-              </div>
+              <>
+                {" "}
+                <div
+                  key={signer_.address}
+                  className="h-8 w-8 cursor-pointer self-start overflow-hidden rounded"
+                >
+                  <img
+                    src={makeBlockie(signer_.address)}
+                    alt="Approver blockie image"
+                    data-tip={signer_.address}
+                  />
+                </div>
+              </>
             );
           })}
         </div>
       </div>
+      <ReactTooltip place="bottom" type="dark" effect="solid" />
     </div>
   ) : (
     <></>
