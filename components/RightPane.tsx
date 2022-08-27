@@ -6,6 +6,7 @@ import { useSignerContext } from "../contexts/Signer";
 import { Wallet } from "../utils/types";
 import AddSignerPage from "./RightPanel/AddSignerPage";
 import CryptoPage from "./RightPanel/CryptoPage";
+import NFTPage from "./RightPanel/NFTPage";
 import TopSectionPage from "./RightPanel/TopSectionPage";
 import TransactionsHistoryPage from "./RightPanel/TransactionsHistoryPage";
 TimeAgo.setDefaultLocale(en.locale);
@@ -99,7 +100,9 @@ const RightPane = ({ wallet }: Props) => {
         {rightPanelSection === rightPanelSectionOptions.CRYPTO && (
           <CryptoPage signer={signer} wallet={wallet} />
         )}
-        {rightPanelSection === rightPanelSectionOptions.NFTS && <>NFTs</>}
+        {rightPanelSection === rightPanelSectionOptions.NFTS && (
+          <NFTPage signer={signer} wallet={wallet} />
+        )}
         {rightPanelSection === rightPanelSectionOptions.TRANSACTION_HISTORY && (
           <TransactionsHistoryPage wallet={wallet} />
         )}

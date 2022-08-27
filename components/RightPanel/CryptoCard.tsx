@@ -7,7 +7,10 @@ interface CryptoCardProps {
 const CryptoCard = ({ data }: CryptoCardProps) => {
   return (
     <div>
-      <div className="group cursor-pointer" role="NFT Card">
+      <div
+        className="group cursor-pointer rounded-lg bg-gray-300 p-6 hover:scale-105"
+        role="NFT Card"
+      >
         <div className="flex w-full justify-center overflow-hidden rounded-md object-contain">
           <img
             className="h-full w-full transition-transform duration-300 ease-in-out group-hover:scale-110"

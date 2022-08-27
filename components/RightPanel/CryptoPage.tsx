@@ -28,16 +28,18 @@ const CryptoPage = ({ signer, wallet }: CryptoPageProps) => {
 
   return (
     <section className="flex flex-col space-y-3 px-28 py-10">
-      <div className="grid grid-cols-6">
-        {crytoData?.map((tokenData) => {
-          return (
-            <>
-              {/* {JSON.stringify(tokenData, null, 4)} */}
-
+      <div className="grid grid-cols-4 gap-6">
+        {[]?.length == 0 ? (
+          <div className="col-span-4">
+            <p className="text-center text-lg">No Crypto Found</p>
+          </div>
+        ) : (
+          crytoData?.map((tokenData) => {
+            return (
               <CryptoCard data={tokenData} key={tokenData.contract_address} />
-            </>
-          );
-        })}
+            );
+          })
+        )}
       </div>
     </section>
   );
