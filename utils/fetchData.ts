@@ -38,12 +38,15 @@ async function fetchIPFSNftData(nftData: any) {
       nftFetchedData.image = nftData.external_data.image
         ? getIPFSUrl(nftData.external_data.image)
         : "";
-    } else {
-      const response = await fetch(getIPFSUrl(nftData.external_data), {
-        headers: {
-          Accept: "application/json",
-        },
-      });
+    } else if (nftData.external_data.external_url) {
+      const response = await fetch(
+        getIPFSUrl(nftData.external_data.external_url),
+        {
+          headers: {
+            Accept: "application/json",
+          },
+        }
+      );
       const metadata_fetched = await response.json();
       if (metadata_fetched) {
         nftFetchedData.name = metadata_fetched.name
@@ -71,7 +74,9 @@ async function asERC20Token(
 ): Promise<ERC20Token> {
   const graphData = await executeQuery(`
       query{
-        erc20LockedBalance(id : "${walletAddr.toLowerCase() + tokenData.contract_address.toLowerCase()}"){
+        erc20LockedBalance(id : "${
+          walletAddr.toLowerCase() + tokenData.contract_address.toLowerCase()
+        }"){
           id
           lockedBalance
         }
@@ -102,7 +107,9 @@ async function asERC721Token(
     const graphData = await executeQuery(`
             query{
               erc721LockedBalance(id : "${
-                walletAddr.toLowerCase() + tokenData.contract_address.toLowerCase() + nft.token_id
+                walletAddr.toLowerCase() +
+                tokenData.contract_address.toLowerCase() +
+                nft.token_id
               }"){
                 id
                 lockedBool
@@ -137,7 +144,9 @@ async function asERC1155Token(
     const graphData = await executeQuery(`
           query{
             erc1155LockedBalance(id : "${
-              walletAddr.toLowerCase() + tokenData.contract_address.toLowerCase() + nft.token_id
+              walletAddr.toLowerCase() +
+              tokenData.contract_address.toLowerCase() +
+              nft.token_id
             }"){
               id
               lockedBalance
@@ -247,7 +256,8 @@ export async function fetchWallets(signer: Signer): Promise<Wallet[]> {
 
 // - fetchWallet(walletaddr) // return Wallet everrything
 export async function fetchWallet(walletAddr: string): Promise<Wallet | null> {
-  const query = `query{
+  if (walletAddr) {
+    const query = `query{
     wallet(id:"${walletAddr.toLowerCase()}"){
       id
       owner{
@@ -322,36 +332,42 @@ export async function fetchWallet(walletAddr: string): Promise<Wallet | null> {
       }
     }
   }`;
-  const data = await executeQuery(query);
-  console.log(data);
-  if (data.wallet) {
-    const { erc20Tokens, erc721Tokens, erc1155Tokens } = await getTokenData(
-      walletAddr
-    );
-    const wallet_: Wallet = {
-      contractAddress: data.wallet.id,
-      owner: data.wallet.owner as Signer,
-      signers: data.wallet.signers as Signer[],
-      erc20Transactions: data.wallet.erc20Transactions as ERC20Transaction[],
-      erc721Transactions: data.wallet.erc721Transactions as ERC721Transaction[],
-      erc1155Transactions: data.wallet
-        .erc115Transactions as ERC1155Transaction[],
-      createdOn: data.wallet.createdOn,
-      metadata: data.wallet.metadata as WalletMetadata,
-      erc20tokens: erc20Tokens,
-      erc721tokens: erc721Tokens,
-      erc1155tokens: erc1155Tokens,
-    };
-    return wallet_;
-  } else {
-    return null;
+    const data = await executeQuery(query);
+    console.log(data);
+    if (data.wallet) {
+      const { erc20Tokens, erc721Tokens, erc1155Tokens } = await getTokenData(
+        walletAddr
+      );
+      const wallet_: Wallet = {
+        contractAddress: data.wallet.id,
+        owner: data.wallet.owner as Signer,
+        signers: data.wallet.signers as Signer[],
+        erc20Transactions: data.wallet.erc20Transactions as ERC20Transaction[],
+        erc721Transactions: data.wallet
+          .erc721Transactions as ERC721Transaction[],
+        erc1155Transactions: data.wallet
+          .erc115Transactions as ERC1155Transaction[],
+        createdOn: data.wallet.createdOn,
+        metadata: data.wallet.metadata as WalletMetadata,
+        erc20tokens: erc20Tokens,
+        erc721tokens: erc721Tokens,
+        erc1155tokens: erc1155Tokens,
+      };
+      return wallet_;
+    } else {
+      return null;
+    }
   }
+  return null;
 }
 
 // - getSigner(signer addrress) // return signer everrything
-export async function fetchSigner(walletAddr: string, signer: ethers.Signer): Promise<Signer | null> {
+export async function fetchSigner(
+  walletAddr: string,
+  signer: ethers.Signer
+): Promise<Signer | null> {
   const signerAddr_ = await signer.getAddress();
-  const id = walletAddr.toLowerCase() + signerAddr_.toLowerCase()
+  const id = walletAddr.toLowerCase() + signerAddr_.toLowerCase();
   const query = `
   query{
     signer(id: "${id}"){
@@ -371,16 +387,16 @@ export async function fetchSigner(walletAddr: string, signer: ethers.Signer): Pr
     }
   }`;
   const data = await executeQuery(query);
-  if(data.signer){
-      const userData: Signer = {
-        address: data.signer.address,
-        weight: data.signer.weight,
-        delegateTo: data.signer.delegateTo,
-        metadata: data.signer.metadata as SignerMetadata,
-        txnCap: data.signer.txnCap,
-        signer: signer
-      };
-      return userData;
+  if (data.signer) {
+    const userData: Signer = {
+      address: data.signer.address,
+      weight: data.signer.weight,
+      delegateTo: data.signer.delegateTo,
+      metadata: data.signer.metadata as SignerMetadata,
+      txnCap: data.signer.txnCap,
+      signer: signer,
+    };
+    return userData;
   }
   return null;
 }
