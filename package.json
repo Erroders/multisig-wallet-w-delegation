@@ -11,6 +11,7 @@
   "dependencies": {
     "@apollo/client": "^3.6.9",
     "@epnsproject/backend-sdk-staging": "^2.0.3",
+    "@epnsproject/frontend-sdk-staging": "^1.8.5",
     "@types/react-modal": "^3.13.1",
     "@uauth/js": "^2.3.0",
     "@uauth/web3modal": "^2.2.0",

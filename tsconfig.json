@@ -16,5 +16,10 @@
     "incremental": true
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "utils/ud.ts"],
-  "exclude": ["node_modules", "contracts-dev", "subgraph"]
+  "exclude": [
+    "node_modules",
+    "contracts-dev",
+    "subgraph",
+    "utils/subscribeEpns.ts"
+  ]
 }
