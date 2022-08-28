@@ -1,3 +1,4 @@
+import { ethers } from "ethers";
 import { useState } from "react";
 import Modal from "react-modal";
 import { createERC20Transaction } from "../../controllers/ERC20TransactionController";
@@ -54,20 +55,21 @@ const CryptoCard = ({ data, signer, wallet }: CryptoCardProps) => {
           </div>
 
           <p className="my-auto inline-block text-gray-500">
-            Balance: {data.balance}
+            Balance: {ethers.utils.formatUnits(data.balance)}
           </p>
           <p className="my-auto inline-block text-gray-500">
-            Locked Balance: {data.lockedBalance}
+            Locked Balance: {ethers.utils.formatUnits(data.lockedBalance)}
           </p>
         </div>
 
         <button
           className="btn-dark w-full "
           disabled={data.balance <= 0}
-          // onClick={openModal}
+          onClick={openModal}
         >
           Transfer
         </button>
+        {/* <button className="btn-dark w-full ">Deposit</button> */}
       </div>
 
       <Modal

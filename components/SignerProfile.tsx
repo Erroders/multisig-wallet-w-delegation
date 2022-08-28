@@ -10,6 +10,7 @@ const SignerProfile = ({ signer }: Props) => {
   const [signerAddress, setSignerAddress] = useState(signer?.address);
 
   useEffect(() => {
+    console.log(signer);
     signer &&
       getUdName(signer.address).then((v) => {
         setSignerAddress(v);
