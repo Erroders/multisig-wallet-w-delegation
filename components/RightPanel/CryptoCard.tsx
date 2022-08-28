@@ -20,8 +20,21 @@ const CryptoCard = ({ data }: CryptoCardProps) => {
         </div>
 
         <div className="px-2 pt-2 pb-4">
-          <h5 className="text-xl font-bold">{data.contractName}</h5>
-          <p className="mt-2 text-gray-500">{data.contractTickerSymbol}</p>
+          <div className="mb-2 flex justify-between">
+            <h5 className="inline-block text-xl font-bold">
+              {data.contractName}
+            </h5>
+            <p className="my-auto inline-block text-gray-500">
+              {data.contractTickerSymbol}
+            </p>
+          </div>
+
+          <p className="my-auto inline-block text-gray-500">
+            Balance: {data.balance}
+          </p>
+          <p className="my-auto inline-block text-gray-500">
+            Locked Balance: {data.lockedBalance}
+          </p>
         </div>
       </div>
     </div>
