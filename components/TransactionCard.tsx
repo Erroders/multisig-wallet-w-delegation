@@ -5,22 +5,27 @@ import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
 import ReactTooltip from "react-tooltip";
 import { useSignerContext } from "../contexts/Signer";
-import { approveTransaction } from "../controllers/TransactionController";
-import { Transaction } from "../utils/types";
+import { approveERC20Transaction } from "../controllers/ERC20TransactionController";
+import { ERC20Transaction } from "../utils/types";
+
 TimeAgo.setDefaultLocale(en.locale);
 TimeAgo.addLocale(en);
 
-type Props = {
-  txn: Transaction;
-};
+interface ERC20TransactionCardProps {
+  txn: ERC20Transaction;
+  walletAddr: string;
+}
 
-const TransactionCard = ({ txn }: Props) => {
+const ERC20TransactionCard = ({
+  txn,
+  walletAddr,
+}: ERC20TransactionCardProps) => {
   const timeAgo = new TimeAgo("en-US");
   const { signer } = useSignerContext();
   return signer ? (
     <div
       className={`group flex items-center justify-between rounded p-5 ${
-        txn.executed ? "bg-emerald-100" : "bg-yellow-100"
+        txn.txnStatus == "EXECUTED" ? "bg-emerald-100" : "bg-yellow-100"
       }`}
     >
       <div className="flex flex-col justify-between space-y-3 px-10">
@@ -38,7 +43,8 @@ const TransactionCard = ({ txn }: Props) => {
       <span className="text-xs">
         {timeAgo.format(new Date(Number(txn.createdOn) * 1000))}
       </span>
-      {txn.executed ? (
+
+      {txn.txnStatus == "EXECUTED" ? (
         <span className="btn-green px-4 py-2.5 opacity-0 hover:scale-100 group-hover:opacity-100">
           Executed
         </span>
@@ -52,7 +58,8 @@ const TransactionCard = ({ txn }: Props) => {
             className="btn-dark w-min opacity-0 group-hover:opacity-100"
             type="button"
             onClick={() => {
-              if (signer) approveTransaction(signer.signer, txn.id);
+              if (signer)
+                approveERC20Transaction(signer.signer, walletAddr, txn.id);
             }}
           >
             Approve
@@ -97,4 +104,4 @@ const TransactionCard = ({ txn }: Props) => {
   );
 };
 
-export default TransactionCard;
+export default ERC20TransactionCard;

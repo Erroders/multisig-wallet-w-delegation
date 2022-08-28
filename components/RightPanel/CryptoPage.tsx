@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { getCryptofromAddress } from "../../utils/fetchData";
-import { CryptoType, Signer, Wallet } from "../../utils/types";
+
+import { ERC20Token, Signer, Wallet } from "../../utils/types";
 import CryptoCard from "./CryptoCard";
 
 interface CryptoPageProps {
@@ -10,7 +10,7 @@ interface CryptoPageProps {
 
 const CryptoPage = ({ signer, wallet }: CryptoPageProps) => {
   const [chainId, setChainId] = useState<number | null>(null);
-  const [crytoData, setCrytoData] = useState<CryptoType[] | null>(null);
+  const [crytoData, setCrytoData] = useState<ERC20Token[] | null>(null);
 
   useEffect(() => {
     signer?.signer?.getChainId().then((v) => {
@@ -19,25 +19,20 @@ const CryptoPage = ({ signer, wallet }: CryptoPageProps) => {
   }, []);
 
   useEffect(() => {
-    chainId &&
-      signer &&
-      getCryptofromAddress(chainId, signer?.address).then((data) => {
-        setCrytoData(data);
-      });
+    setCrytoData(wallet.erc20tokens);
+    console.log(wallet.erc20tokens);
   }, [chainId]);
 
   return (
     <section className="flex flex-col space-y-3 px-28 py-10">
       <div className="grid grid-cols-4 gap-6">
-        {[]?.length == 0 ? (
+        {crytoData == null || crytoData?.length == 0 ? (
           <div className="col-span-4">
             <p className="text-center text-lg">No Crypto Found</p>
           </div>
         ) : (
-          crytoData?.map((tokenData) => {
-            return (
-              <CryptoCard data={tokenData} key={tokenData.contract_address} />
-            );
+          crytoData.map((tokenData) => {
+            return <CryptoCard data={tokenData} key={tokenData.contractAddr} />;
           })
         )}
       </div>
