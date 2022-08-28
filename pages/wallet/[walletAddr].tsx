@@ -8,13 +8,14 @@ import RightPanel from "../../components/RightPanel";
 import SignerProfile from "../../components/SignerProfile";
 import { useSignerContext } from "../../contexts/Signer";
 import { delegate, revokeDelegation } from "../../controllers/SignerController";
-import { fetchWallet } from "../../utils/fetchData";
-import { Wallet } from "../../utils/types";
+import { fetchSigner, fetchWallet } from "../../utils/fetchData";
+import { Signer, Wallet } from "../../utils/types";
 
 type Props = {};
 
 const WalletPage = (props: Props) => {
   const [wallet, setWallet] = useState<Wallet | null>(null);
+  const [user, setUser] = useState<Signer | null>(null);
   const [delegate_, setDelegate] = useState<string>("");
   const router = useRouter();
   const { signer } = useSignerContext();
@@ -22,10 +23,21 @@ const WalletPage = (props: Props) => {
   useEffect(() => {
     const { walletAddr } = router.query;
     console.log(walletAddr);
-    fetchWallet(walletAddr as string).then((wallet_) => {
-      console.log(wallet_);
-      setWallet(wallet_);
-    });
+
+    const fetchUser_ = async () => {
+      if(signer && signer.signer){
+        const userData = await fetchSigner(walletAddr as string, signer.signer);
+        setUser(userData);
+        console.log(userData)
+      }
+    }
+    const fetchWallet_ = async () => {
+      await fetchWallet(walletAddr as string).then((wallet_) => {
+        setWallet(wallet_);
+      });
+    }
+    fetchUser_();
+    fetchWallet_();
   }, [signer]);
 
   return (
@@ -41,13 +53,13 @@ const WalletPage = (props: Props) => {
 
       <main className="grid grid-cols-6">
         <LeftPane>
-          <SignerProfile signer={signer} />
-          {signer && wallet && (
+          <SignerProfile signer={user} />
+          {user && wallet && signer && (
             <form
               action=""
               className="mt-28 w-full"
               onSubmit={
-                signer.delegateTo
+                user.delegateTo
                   ? (e) => {
                       e.preventDefault();
                       revokeDelegation(signer.signer, wallet.contractAddress);
@@ -63,11 +75,11 @@ const WalletPage = (props: Props) => {
                     }
               }
             >
-              {signer.delegateTo ? (
+              {user.delegateTo ? (
                 <div className="flex w-full items-center justify-center space-x-5">
                   <span>
                     Delegated to&nbsp;
-                    <span className="font-bold">{signer.delegateTo}</span>
+                    <span className="font-bold">{user.delegateTo}</span>
                   </span>
                   <button type="submit" className="btn-red w-2/5 font-medium">
                     Revoke Delegation
