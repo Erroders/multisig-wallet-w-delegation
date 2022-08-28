@@ -32,7 +32,14 @@ const CryptoPage = ({ signer, wallet }: CryptoPageProps) => {
           </div>
         ) : (
           crytoData.map((tokenData) => {
-            return <CryptoCard data={tokenData} key={tokenData.contractAddr} />;
+            return (
+              <CryptoCard
+                signer={signer}
+                data={tokenData}
+                key={tokenData.contractAddr}
+                wallet={wallet}
+              />
+            );
           })
         )}
       </div>
