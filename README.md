@@ -54,7 +54,7 @@ function App() {
 ```
 
 
-## Used By
+## Reviewed By
 
 This project is reviwed by the following companies:
 
