@@ -94,7 +94,7 @@ const WalletPage = (props: Props) => {
                       })
                       .map((signer_) => {
                         return {
-                          item: signer_.metadata ? signer_.metadata.name : "",
+                          item: signer_.metadata ? (signer_.metadata.name + "(" + signer_.metadata.walletAddress.substring(0,15) + "...") : "",
                           attribute: signer_,
                         };
                       })}
