@@ -1,10 +1,10 @@
-import { ERC20Token } from "../../utils/types";
+import { ERC1155Token, ERC721Token } from "../../utils/types";
 
-interface CryptoCardProps {
-  data: ERC20Token;
+interface NFTCardProps {
+  data: ERC721Token | ERC1155Token;
 }
 
-const CryptoCard = ({ data }: CryptoCardProps) => {
+const NFTCard = ({ data }: NFTCardProps) => {
   return (
     <div>
       <div
@@ -14,7 +14,7 @@ const CryptoCard = ({ data }: CryptoCardProps) => {
         <div className="flex w-full justify-center overflow-hidden rounded-md object-contain">
           <img
             className="h-full w-full transition-transform duration-300 ease-in-out group-hover:scale-110"
-            src={data.logoUrl ? data.logoUrl : "/img_not_found.png"}
+            src={data.url ? data.url : "/img_not_found.png"}
             alt={data.contractName}
           />
         </div>
@@ -28,4 +28,4 @@ const CryptoCard = ({ data }: CryptoCardProps) => {
   );
 };
 
-export default CryptoCard;
+export default NFTCard;
