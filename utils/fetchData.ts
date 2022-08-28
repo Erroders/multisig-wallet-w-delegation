@@ -1,4 +1,5 @@
 import axios from "axios";
+import { ethers } from "ethers";
 import { executeQuery } from "./apolloClient";
 import { getIPFSUrl } from "./getIPFSUrl";
 import {
@@ -9,6 +10,7 @@ import {
   ERC721Token,
   ERC721Transaction,
   Signer,
+  SignerMetadata,
   Wallet,
   WalletMetadata,
 } from "./types";
@@ -69,7 +71,7 @@ async function asERC20Token(
 ): Promise<ERC20Token> {
   const graphData = await executeQuery(`
       query{
-        erc20LockedBalance(id : "${walletAddr + tokenData.contract_address}"){
+        erc20LockedBalance(id : "${walletAddr.toLowerCase() + tokenData.contract_address.toLowerCase()}"){
           id
           lockedBalance
         }
@@ -100,7 +102,7 @@ async function asERC721Token(
     const graphData = await executeQuery(`
             query{
               erc721LockedBalance(id : "${
-                walletAddr + tokenData.contract_address + nft.token_id
+                walletAddr.toLowerCase() + tokenData.contract_address.toLowerCase() + nft.token_id
               }"){
                 id
                 lockedBool
@@ -135,7 +137,7 @@ async function asERC1155Token(
     const graphData = await executeQuery(`
           query{
             erc1155LockedBalance(id : "${
-              walletAddr + tokenData.contract_address + nft.token_id
+              walletAddr.toLowerCase() + tokenData.contract_address.toLowerCase() + nft.token_id
             }"){
               id
               lockedBalance
@@ -246,7 +248,7 @@ export async function fetchWallets(signer: Signer): Promise<Wallet[]> {
 // - fetchWallet(walletaddr) // return Wallet everrything
 export async function fetchWallet(walletAddr: string): Promise<Wallet | null> {
   const query = `query{
-    wallet(id:"${walletAddr}"){
+    wallet(id:"${walletAddr.toLowerCase()}"){
       id
       owner{
         id
@@ -347,3 +349,38 @@ export async function fetchWallet(walletAddr: string): Promise<Wallet | null> {
 }
 
 // - getSigner(signer addrress) // return signer everrything
+export async function fetchSigner(walletAddr: string, signer: ethers.Signer): Promise<Signer | null> {
+  const signerAddr_ = await signer.getAddress();
+  const id = walletAddr.toLowerCase() + signerAddr_.toLowerCase()
+  const query = `
+  query{
+    signer(id: "${id}"){
+      id
+      address
+      weight
+      txnCap
+      delegateTo
+      metadata{
+        name
+        contactNo
+        email
+        walletAddress
+        role
+        remarks
+      }
+    }
+  }`;
+  const data = await executeQuery(query);
+  if(data.signer){
+      const userData: Signer = {
+        address: data.signer.address,
+        weight: data.signer.weight,
+        delegateTo: data.signer.delegateTo,
+        metadata: data.signer.metadata as SignerMetadata,
+        txnCap: data.signer.txnCap,
+        signer: signer
+      };
+      return userData;
+  }
+  return null;
+}

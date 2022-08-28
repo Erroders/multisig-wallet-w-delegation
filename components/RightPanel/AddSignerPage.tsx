@@ -61,7 +61,9 @@ const AddSignerPage = ({
             };
 
             signer &&
-              addSigner(signer.signer, wallet.contractAddress, signerData);
+              addSigner(signer.signer, wallet.contractAddress, signerData).then(() => {
+                setShowAddSignerBox(false);
+              });
           }}
         >
           <div className="grid grid-cols-2 gap-10">
