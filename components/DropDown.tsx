@@ -43,7 +43,7 @@ const DropDown = ({ menuOptions, defaultSelected, setState }: Props) => {
 
                 {open && (
                     <div
-                        className="absolute -left-3 z-10 mt-6 w-40 rounded bg-teal-50 shadow-lg"
+                        className="absolute -left-3 z-10 mt-6 w-full rounded bg-teal-50 shadow-lg"
                         role="menu"
                     >
                         <div className="p-2">
