@@ -42,6 +42,7 @@ const RightPane = ({ wallet }: Props) => {
         setShowAddSignerBox={setShowAddSignerBox}
         showAddSignerBox={showAddSignerBox}
         signer={signer}
+        wallet={wallet}
       />
       <div className={showAddSignerBox ? " hidden " : ""}>
         <ul className="mx-28 my-10 mb-2 flex overflow-hidden rounded-lg bg-gray-300 text-center">

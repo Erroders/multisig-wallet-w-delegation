@@ -189,7 +189,7 @@ async function getTokenData(walletAddress: string): Promise<any> {
         erc721Tokens = erc721Tokens_;
       }
     } else if (
-      tokenData.type == "cryptocurrent" ||
+      tokenData.type == "cryptocurrency" ||
       tokenData.type == "stablecoin" ||
       tokenData.type == "dust"
     ) {

@@ -15,6 +15,6 @@
     "jsx": "preserve",
     "incremental": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "utils/ud.cts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "utils/ud.ts"],
   "exclude": ["node_modules", "contracts-dev", "subgraph"]
 }
