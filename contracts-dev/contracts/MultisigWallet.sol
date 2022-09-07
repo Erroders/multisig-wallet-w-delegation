@@ -213,7 +213,7 @@ contract MultisigWallet is Ownable, ERC721Holder, ERC1155Holder {
                 (signers[msg.sender].txnCap >= int256(amount_)),
             "Transaction cap exceeded."
         );
-        if (contractAddr_ == address(this)) {
+        if (contractAddr_ == address(0)) {
             require(
                 address(this).balance - erc20LockedBalance[contractAddr_] >=
                     amount_,
@@ -282,7 +282,7 @@ contract MultisigWallet is Ownable, ERC721Holder, ERC1155Holder {
 
     function _executeERC20Transaction(uint256 txnId_) internal {
         ERC20Transaction storage txn = erc20Transactions[txnId_];
-        if (txn.contractAddr == address(this)) {
+        if (txn.contractAddr == address(0)) {
             payable(txn.to).transfer(txn.amount);
         } else {
             IERC20 erc20Contract = IERC20(txn.contractAddr);
