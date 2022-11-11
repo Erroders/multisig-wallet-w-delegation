@@ -1,22 +1,21 @@
 import { ethers } from "ethers";
-import MultisigWallet from "./../subgraph/abis/MultisigWallet.json";
+import MultisigWallet from "../subgraph/abis/MultisigWallet.json";
 
-const address = "0xD5F80a6C0431305c354FCC338627F4b492434Bf3";
-
-export async function createTransaction(
+export async function createERC721Transaction(
     signer: ethers.Signer | null,
+    walletAddr: string,
+    contractAddr: string,
     to: string,
-    amount: number
+    tokenId: number
 ) {
     if (signer) {
         const contract = new ethers.Contract(
-            address,
+            walletAddr,
             MultisigWallet.abi,
             signer
         );
-        const amount_ = ethers.utils.parseUnits(amount.toString(), "ether");
         try {
-            const txn = await contract.createTransaction(to, amount_);
+            const txn = await contract.createERC721Transaction(to, contractAddr, tokenId);
             const txnStatus = await txn.wait();
             console.log(txnStatus);
         } catch (error) {
@@ -25,18 +24,19 @@ export async function createTransaction(
     }
 }
 
-export async function approveTransaction(
+export async function approveERC721Transaction(
     signer: ethers.Signer | null,
+    walletAddr: string,
     txnId: string
 ) {
     if (signer) {
         const contract = new ethers.Contract(
-            address,
+            walletAddr,
             MultisigWallet.abi,
             signer
         );
         try {
-            const txn = await contract.approveTransaction(Number(txnId));
+            const txn = await contract.approveERC721Transaction(Number(txnId));
             const txnStatus = await txn.wait();
             console.log(txnStatus);
         } catch (error) {
@@ -45,18 +45,19 @@ export async function approveTransaction(
     }
 }
 
-export async function deposit(signer: ethers.Signer | null, value: string) {
+export async function disapproveERC721Transaction(
+    signer: ethers.Signer | null,
+    walletAddr: string,
+    txnId: string
+) {
     if (signer) {
         const contract = new ethers.Contract(
-            address,
+            walletAddr,
             MultisigWallet.abi,
             signer
         );
         try {
-            value = ethers.utils
-                .parseUnits(value.toString(), "ether")
-                .toString();
-            const txn = await contract.deposit({ value: value });
+            const txn = await contract.disapproveERC721Transaction(Number(txnId));
             const txnStatus = await txn.wait();
             console.log(txnStatus);
         } catch (error) {

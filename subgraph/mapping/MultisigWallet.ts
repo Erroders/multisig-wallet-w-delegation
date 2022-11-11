@@ -34,9 +34,9 @@ import {
 // Signer --------------------------------------------------------------------
 
 export function handleDelegate(event: Delegate): void {
-    let signer = Signer.load(event.params.from.toHex());
+    let signer = Signer.load(event.address.toHex() + event.params.from.toHex());
     if (signer) {
-        let to: string | null = event.params.to.toHex();
+        let to: string | null = event.address.toHex() + event.params.to.toHex();
         while (to && to.length != 0) {
             let delegate_ = Signer.load(to);
             if (delegate_) {
@@ -45,13 +45,15 @@ export function handleDelegate(event: Delegate): void {
                 delegate_.save();
             }
         }
-        signer.delegateTo = event.params.to.toHex();
+        signer.delegateTo = event.address.toHex() + event.params.to.toHex();
         signer.save();
     }
 }
 
 export function handleRevokeDelegation(event: RevokeDelegation): void {
-    let signer = Signer.load(event.params.signer.toHex());
+    let signer = Signer.load(
+        event.address.toHex() + event.params.signer.toHex()
+    );
     if (signer) {
         let delegateAddr: string | null = signer.delegateTo;
         while (delegateAddr && delegateAddr.length != 0) {
@@ -68,9 +70,13 @@ export function handleRevokeDelegation(event: RevokeDelegation): void {
 }
 
 export function handleSignerAdded(event: SignerAdded): void {
-    let signer = Signer.load(event.params.signerAddress.toHex());
+    let signer = Signer.load(
+        event.address.toHex() + event.params.signerAddress.toHex()
+    );
     if (!signer) {
-        signer = new Signer(event.params.signerAddress.toHex());
+        signer = new Signer(
+            event.address.toHex() + event.params.signerAddress.toHex()
+        );
         signer.address = event.params.signerAddress;
         signer.weight = BigInt.fromString("1");
         signer.txnCap = event.params.txnCap;
@@ -82,7 +88,7 @@ export function handleSignerAdded(event: SignerAdded): void {
 
             if (object) {
                 let signerMetadata = new SignerMetadata(
-                    event.params.signerAddress.toHex()
+                    event.address.toHex() + event.params.signerAddress.toHex()
                 );
                 signerMetadata.name = object.get("name")!.toString();
                 signerMetadata.contactNo = object.get("contactNo")!.toString();
@@ -93,14 +99,17 @@ export function handleSignerAdded(event: SignerAdded): void {
                     signerMetadata.remarks = object.get("remarks")!.toString();
                 }
                 signerMetadata.save();
-                signer.metadata = event.params.signerAddress.toHex();
+                signer.metadata =
+                    event.address.toHex() + event.params.signerAddress.toHex();
             }
         }
         signer.save();
         let wallet = Wallet.load(event.address.toHex());
         if (wallet) {
             let tempSigners = wallet.signers;
-            tempSigners.push(event.params.signerAddress.toHex());
+            tempSigners.push(
+                event.address.toHex() + event.params.signerAddress.toHex()
+            );
             wallet.signers = tempSigners;
             wallet.save();
         }
@@ -133,7 +142,10 @@ export function handleERC20TransactionCreated(
                 wallet.erc20Transactions = tempTxns;
             }
             let id = event.address.toHex() + event.params.contractAddr.toHex();
-            let lockedERC20Balance = new ERC20LockedBalance(id);
+            let lockedERC20Balance = ERC20LockedBalance.load(id);
+            if (!lockedERC20Balance) {
+                lockedERC20Balance = new ERC20LockedBalance(id);
+            }
             lockedERC20Balance.lockedBalance =
                 lockedERC20Balance.lockedBalance.plus(event.params.amount);
 
@@ -148,12 +160,16 @@ export function handleERC20TransactionApproved(
     event: ERC20TransactionApproved
 ): void {
     let txn = ERC20Transaction.load(event.params.txnId.toString());
-    let approver = Signer.load(event.params.approver.toHex());
+    let approver = Signer.load(
+        event.address.toHex() + event.params.approver.toHex()
+    );
     if (txn && approver) {
         txn.approval = txn.approval.plus(approver.weight);
         let tempApprovedBy = txn.approvedBy;
         if (tempApprovedBy) {
-            tempApprovedBy.push(event.params.approver.toHex());
+            tempApprovedBy.push(
+                event.address.toHex() + event.params.approver.toHex()
+            );
             txn.approvedBy = tempApprovedBy;
         }
         txn.txnStatus = "WAITING_APPROVAL";
@@ -165,12 +181,16 @@ export function handleERC20TransactionDisapproved(
     event: ERC20TransactionDisapproved
 ): void {
     let txn = ERC20Transaction.load(event.params.txnId.toString());
-    let disapprover = Signer.load(event.params.disapprover.toHex());
+    let disapprover = Signer.load(
+        event.address.toHex() + event.params.disapprover.toHex()
+    );
     if (txn && disapprover) {
         txn.disapproval = txn.disapproval.plus(disapprover.weight);
         let tempDisapprovedBy = txn.disapprovedBy;
         if (tempDisapprovedBy) {
-            tempDisapprovedBy.push(event.params.disapprover.toHex());
+            tempDisapprovedBy.push(
+                event.address.toHex() + event.params.disapprover.toHex()
+            );
             txn.disapprovedBy = tempDisapprovedBy;
         }
         txn.txnStatus = "WAITING_APPROVAL";
@@ -253,12 +273,16 @@ export function handleERC721TransactionApproved(
     event: ERC721TransactionApproved
 ): void {
     let txn = ERC721Transaction.load(event.params.txnId.toString());
-    let approver = Signer.load(event.params.approver.toHex());
+    let approver = Signer.load(
+        event.address.toHex() + event.params.approver.toHex()
+    );
     if (txn && approver) {
         txn.approval = txn.approval.plus(approver.weight);
         let tempApprovedBy = txn.approvedBy;
         if (tempApprovedBy) {
-            tempApprovedBy.push(event.params.approver.toHex());
+            tempApprovedBy.push(
+                event.address.toHex() + event.params.approver.toHex()
+            );
             txn.approvedBy = tempApprovedBy;
         }
         txn.txnStatus = "WAITING_APPROVAL";
@@ -270,12 +294,16 @@ export function handleERC721TransactionDisapproved(
     event: ERC721TransactionDisapproved
 ): void {
     let txn = ERC721Transaction.load(event.params.txnId.toString());
-    let disapprover = Signer.load(event.params.disapprover.toHex());
+    let disapprover = Signer.load(
+        event.address.toHex() + event.params.disapprover.toHex()
+    );
     if (txn && disapprover) {
         txn.disapproval = txn.disapproval.plus(disapprover.weight);
         let tempDisapprovedBy = txn.disapprovedBy;
         if (tempDisapprovedBy) {
-            tempDisapprovedBy.push(event.params.disapprover.toHex());
+            tempDisapprovedBy.push(
+                event.address.toHex() + event.params.disapprover.toHex()
+            );
             txn.disapprovedBy = tempDisapprovedBy;
         }
         txn.save();
@@ -355,12 +383,16 @@ export function handleERC1155TransactionApproved(
     event: ERC1155TransactionApproved
 ): void {
     let txn = ERC1155Transaction.load(event.params.txnId.toString());
-    let approver = Signer.load(event.params.approver.toHex());
+    let approver = Signer.load(
+        event.address.toHex() + event.params.approver.toHex()
+    );
     if (txn && approver) {
         txn.approval = txn.approval.plus(approver.weight);
         let tempApprovedBy = txn.approvedBy;
         if (tempApprovedBy) {
-            tempApprovedBy.push(event.params.approver.toHex());
+            tempApprovedBy.push(
+                event.address.toHex() + event.params.approver.toHex()
+            );
             txn.approvedBy = tempApprovedBy;
         }
         txn.txnStatus = "WAITING_APPROVAL";
@@ -372,12 +404,16 @@ export function handleERC1155TransactionDisapproved(
     event: ERC1155TransactionDisapproved
 ): void {
     let txn = ERC1155Transaction.load(event.params.txnId.toString());
-    let disapprover = Signer.load(event.params.disapprover.toHex());
+    let disapprover = Signer.load(
+        event.address.toHex() + event.params.disapprover.toHex()
+    );
     if (txn && disapprover) {
         txn.disapproval = txn.disapproval.plus(disapprover.weight);
         let tempDisapprovedBy = txn.disapprovedBy;
         if (tempDisapprovedBy) {
-            tempDisapprovedBy.push(event.params.disapprover.toHex());
+            tempDisapprovedBy.push(
+                event.address.toHex() + event.params.disapprover.toHex()
+            );
             txn.disapprovedBy = tempDisapprovedBy;
         }
         txn.save();

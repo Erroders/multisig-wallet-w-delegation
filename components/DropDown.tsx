@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type Props = {
     menuOptions: {
@@ -14,6 +14,9 @@ type Props = {
 const DropDown = ({ menuOptions, defaultSelected, setState }: Props) => {
     const [open, setOpen] = useState(false);
     const [selected, setSelected] = useState(defaultSelected);
+    useEffect(() => {
+        setState(menuOptions[defaultSelected].attribute);
+    });
     return (
         <div
             className="inline-flex w-full cursor-pointer items-stretch rounded border-2 border-transparent bg-white p-3 text-sm font-medium text-gray-900"
@@ -43,7 +46,7 @@ const DropDown = ({ menuOptions, defaultSelected, setState }: Props) => {
 
                 {open && (
                     <div
-                        className="absolute -left-3 z-10 mt-6 w-40 rounded bg-teal-50 shadow-lg"
+                        className="absolute -left-3 z-10 mt-6 w-full rounded bg-teal-50 shadow-lg"
                         role="menu"
                     >
                         <div className="p-2">

@@ -1,33 +1,27 @@
 import { ethers } from "ethers";
-import { NFTStorage, Blob } from "nft.storage";
-import { Signer, SignerMetadata } from "../utils/types";
+import ERC20ABI from "../utils/ERC20ABI.json";
+import { Signer } from "../utils/types";
+import { uploadToIpfs } from "../utils/uploadToIPFS";
 import MultisigWallet from "./../subgraph/abis/MultisigWallet.json";
-
-const address = "0xD5F80a6C0431305c354FCC338627F4b492434Bf3";
-
-async function uploadToIpfs(metadata: SignerMetadata) {
-    const client = new NFTStorage({
-        token: process.env.NEXT_PUBLIC_NFT_STORAGE_API_KEY || "",
-    });
-    const cid = await client.storeBlob(new Blob([JSON.stringify(metadata)]));
-    console.log(cid);
-    return cid;
-}
 
 export async function addSigner(
     signer: ethers.Signer | null,
+    walletAddress: string,
     signerData: Signer
 ) {
-    if (signer) {
+    if (signer && signerData.metadata) {
         const contract = new ethers.Contract(
-            address,
+            walletAddress,
             MultisigWallet.abi,
             signer
         );
         const cid = await uploadToIpfs(signerData.metadata);
-        console.log(cid, signerData);
         try {
-            const txn = await contract.addSigner(signerData.address, cid);
+            const txn = await contract.addSigner(
+                signerData.address,
+                signerData.txnCap,
+                cid
+            );
             const txnStatus = await txn.wait();
             console.log(txnStatus);
         } catch (error) {
@@ -36,10 +30,15 @@ export async function addSigner(
     }
 }
 
-export async function delegate(signer: ethers.Signer | null, to: string) {
+export async function delegate(
+    signer: ethers.Signer | null,
+    walletAddress: string,
+    to: string
+) {
+    console.log(signer, walletAddress, to);
     if (signer) {
         const contract = new ethers.Contract(
-            address,
+            walletAddress,
             MultisigWallet.abi,
             signer
         );
@@ -53,10 +52,13 @@ export async function delegate(signer: ethers.Signer | null, to: string) {
     }
 }
 
-export async function revokeDelegation(signer: ethers.Signer | null) {
+export async function revokeDelegation(
+    signer: ethers.Signer | null,
+    walletAddress: string
+) {
     if (signer) {
         const contract = new ethers.Contract(
-            address,
+            walletAddress,
             MultisigWallet.abi,
             signer
         );
@@ -67,5 +69,33 @@ export async function revokeDelegation(signer: ethers.Signer | null) {
         } catch (error) {
             console.error(error);
         }
+    }
+}
+
+export default async function deposit(
+    signer: ethers.Signer,
+    contract: string,
+    amount: string,
+    walletAddress: string
+) {
+    try {
+        if (contract == "native") {
+            let tx = {
+                to: walletAddress,
+                value: ethers.utils.parseEther(amount),
+            };
+            const tx_status = await (await signer.sendTransaction(tx)).wait();
+            console.log(tx_status);
+            return;
+        }
+        const ERC20Contract = new ethers.Contract(contract, ERC20ABI, signer);
+        const tx = await ERC20Contract.connect(signer).transfer(
+            walletAddress,
+            ethers.utils.parseUnits(amount)
+        );
+        const tx_status = await tx.wait();
+        console.log(tx_status);
+    } catch (error) {
+        console.log(error);
     }
 }
