@@ -32,9 +32,11 @@ type ERC20Transaction @entity {
     approval: BigInt!
     disapproval: BigInt!
     txnStatus: TransactionStatus!
+    createdBy: Signer!
     approvedBy: [Signer!]
     disapprovedBy: [Signer!]
     createdOn: BigInt!
+    executedOn: BigInt
 }
 
 type ERC721Transaction @entity {
@@ -45,9 +47,11 @@ type ERC721Transaction @entity {
     approval: BigInt!
     disapproval: BigInt!
     txnStatus: TransactionStatus!
+    createdBy: Signer!
     approvedBy: [Signer!]
     disapprovedBy: [Signer!]
     createdOn: BigInt!
+    executedOn: BigInt
 }
 
 type ERC1155Transaction @entity {
@@ -59,9 +63,11 @@ type ERC1155Transaction @entity {
     approval: BigInt!
     disapproval: BigInt!
     txnStatus: TransactionStatus!
+    createdBy: Signer!
     approvedBy: [Signer!]
     disapprovedBy: [Signer!]
     createdOn: BigInt!
+    executedOn: BigInt
 }
 
 type Wallet @entity {
@@ -83,15 +89,20 @@ type WalletMetadata @entity {
 
 type ERC20LockedBalance @entity {
     id: ID!
+    contractAddr: Bytes!
     lockedBalance: BigInt!
 }
 
 type ERC721LockedBalance @entity {
     id: ID!
+    contractAddr: Bytes!
+    tokenId: BigInt!
     lockedBool: Boolean!
 }
 
 type ERC1155LockedBalance @entity {
     id: ID!
+    contractAddr: Bytes!
+    tokenId: BigInt!
     lockedBalance: BigInt!
 }

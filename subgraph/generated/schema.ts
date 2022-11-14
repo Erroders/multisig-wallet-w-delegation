@@ -277,6 +277,15 @@ export class ERC20Transaction extends Entity {
     this.set("txnStatus", Value.fromString(value));
   }
 
+  get createdBy(): string {
+    let value = this.get("createdBy");
+    return value!.toString();
+  }
+
+  set createdBy(value: string) {
+    this.set("createdBy", Value.fromString(value));
+  }
+
   get approvedBy(): Array<string> | null {
     let value = this.get("approvedBy");
     if (!value || value.kind == ValueKind.NULL) {
@@ -318,6 +327,23 @@ export class ERC20Transaction extends Entity {
 
   set createdOn(value: BigInt) {
     this.set("createdOn", Value.fromBigInt(value));
+  }
+
+  get executedOn(): BigInt | null {
+    let value = this.get("executedOn");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set executedOn(value: BigInt | null) {
+    if (!value) {
+      this.unset("executedOn");
+    } else {
+      this.set("executedOn", Value.fromBigInt(<BigInt>value));
+    }
   }
 }
 
@@ -408,6 +434,15 @@ export class ERC721Transaction extends Entity {
     this.set("txnStatus", Value.fromString(value));
   }
 
+  get createdBy(): string {
+    let value = this.get("createdBy");
+    return value!.toString();
+  }
+
+  set createdBy(value: string) {
+    this.set("createdBy", Value.fromString(value));
+  }
+
   get approvedBy(): Array<string> | null {
     let value = this.get("approvedBy");
     if (!value || value.kind == ValueKind.NULL) {
@@ -449,6 +484,23 @@ export class ERC721Transaction extends Entity {
 
   set createdOn(value: BigInt) {
     this.set("createdOn", Value.fromBigInt(value));
+  }
+
+  get executedOn(): BigInt | null {
+    let value = this.get("executedOn");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set executedOn(value: BigInt | null) {
+    if (!value) {
+      this.unset("executedOn");
+    } else {
+      this.set("executedOn", Value.fromBigInt(<BigInt>value));
+    }
   }
 }
 
@@ -548,6 +600,15 @@ export class ERC1155Transaction extends Entity {
     this.set("txnStatus", Value.fromString(value));
   }
 
+  get createdBy(): string {
+    let value = this.get("createdBy");
+    return value!.toString();
+  }
+
+  set createdBy(value: string) {
+    this.set("createdBy", Value.fromString(value));
+  }
+
   get approvedBy(): Array<string> | null {
     let value = this.get("approvedBy");
     if (!value || value.kind == ValueKind.NULL) {
@@ -589,6 +650,23 @@ export class ERC1155Transaction extends Entity {
 
   set createdOn(value: BigInt) {
     this.set("createdOn", Value.fromBigInt(value));
+  }
+
+  get executedOn(): BigInt | null {
+    let value = this.get("executedOn");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set executedOn(value: BigInt | null) {
+    if (!value) {
+      this.unset("executedOn");
+    } else {
+      this.set("executedOn", Value.fromBigInt(<BigInt>value));
+    }
   }
 }
 
@@ -803,6 +881,15 @@ export class ERC20LockedBalance extends Entity {
     this.set("id", Value.fromString(value));
   }
 
+  get contractAddr(): Bytes {
+    let value = this.get("contractAddr");
+    return value!.toBytes();
+  }
+
+  set contractAddr(value: Bytes) {
+    this.set("contractAddr", Value.fromBytes(value));
+  }
+
   get lockedBalance(): BigInt {
     let value = this.get("lockedBalance");
     return value!.toBigInt();
@@ -846,6 +933,24 @@ export class ERC721LockedBalance extends Entity {
     this.set("id", Value.fromString(value));
   }
 
+  get contractAddr(): Bytes {
+    let value = this.get("contractAddr");
+    return value!.toBytes();
+  }
+
+  set contractAddr(value: Bytes) {
+    this.set("contractAddr", Value.fromBytes(value));
+  }
+
+  get tokenId(): BigInt {
+    let value = this.get("tokenId");
+    return value!.toBigInt();
+  }
+
+  set tokenId(value: BigInt) {
+    this.set("tokenId", Value.fromBigInt(value));
+  }
+
   get lockedBool(): boolean {
     let value = this.get("lockedBool");
     return value!.toBoolean();
@@ -887,6 +992,24 @@ export class ERC1155LockedBalance extends Entity {
 
   set id(value: string) {
     this.set("id", Value.fromString(value));
+  }
+
+  get contractAddr(): Bytes {
+    let value = this.get("contractAddr");
+    return value!.toBytes();
+  }
+
+  set contractAddr(value: Bytes) {
+    this.set("contractAddr", Value.fromBytes(value));
+  }
+
+  get tokenId(): BigInt {
+    let value = this.get("tokenId");
+    return value!.toBigInt();
+  }
+
+  set tokenId(value: BigInt) {
+    this.set("tokenId", Value.fromBigInt(value));
   }
 
   get lockedBalance(): BigInt {
