@@ -121,34 +121,37 @@ export function handleSignerAdded(event: SignerAdded): void {
 export function handleERC20TransactionCreated(
     event: ERC20TransactionCreated
 ): void {
-    let txn = ERC20Transaction.load(event.params.txnId.toString());
+    const txnId = event.address.toHex() + event.params.txnId.toString();
+    let txn = ERC20Transaction.load(txnId);
     if (!txn) {
-        txn = new ERC20Transaction(event.params.txnId.toString());
+        txn = new ERC20Transaction(txnId);
         txn.to = event.params.to;
         txn.contractAddr = event.params.contractAddr;
         txn.amount = event.params.amount;
         txn.approval = BigInt.fromString("0");
         txn.disapproval = BigInt.fromString("0");
         txn.createdOn = event.block.timestamp;
+        txn.executedOn = null;
         txn.txnStatus = "CREATED";
         txn.approvedBy = [];
         txn.disapprovedBy = [];
+        txn.createdBy = event.address.toHex() + event.transaction.from.toHex();
 
         let wallet = Wallet.load(event.address.toHex());
         if (wallet) {
             let tempTxns = wallet.erc20Transactions;
             if (tempTxns) {
-                tempTxns.push(event.params.txnId.toString());
+                tempTxns.push(txnId);
                 wallet.erc20Transactions = tempTxns;
             }
             let id = event.address.toHex() + event.params.contractAddr.toHex();
             let lockedERC20Balance = ERC20LockedBalance.load(id);
             if (!lockedERC20Balance) {
                 lockedERC20Balance = new ERC20LockedBalance(id);
+                lockedERC20Balance.contractAddr = event.params.contractAddr;
             }
             lockedERC20Balance.lockedBalance =
                 lockedERC20Balance.lockedBalance.plus(event.params.amount);
-
             lockedERC20Balance.save();
             wallet.save();
         }
@@ -159,7 +162,9 @@ export function handleERC20TransactionCreated(
 export function handleERC20TransactionApproved(
     event: ERC20TransactionApproved
 ): void {
-    let txn = ERC20Transaction.load(event.params.txnId.toString());
+    let txn = ERC20Transaction.load(
+        event.address.toHex() + event.params.txnId.toString()
+    );
     let approver = Signer.load(
         event.address.toHex() + event.params.approver.toHex()
     );
@@ -180,7 +185,9 @@ export function handleERC20TransactionApproved(
 export function handleERC20TransactionDisapproved(
     event: ERC20TransactionDisapproved
 ): void {
-    let txn = ERC20Transaction.load(event.params.txnId.toString());
+    let txn = ERC20Transaction.load(
+        event.address.toHex() + event.params.txnId.toString()
+    );
     let disapprover = Signer.load(
         event.address.toHex() + event.params.disapprover.toHex()
     );
@@ -201,9 +208,12 @@ export function handleERC20TransactionDisapproved(
 export function handleERC20TransactionExecuted(
     event: ERC20TransactionExecuted
 ): void {
-    let txn = ERC20Transaction.load(event.params.txnId.toString());
+    let txn = ERC20Transaction.load(
+        event.address.toHex() + event.params.txnId.toString()
+    );
     if (txn) {
         txn.txnStatus = "EXECUTED";
+        txn.executedOn = event.block.timestamp;
         let id = event.address.toHex() + txn.contractAddr.toHex();
         let lockedERC20Balance = ERC20LockedBalance.load(id);
         if (lockedERC20Balance) {
@@ -218,9 +228,12 @@ export function handleERC20TransactionExecuted(
 export function handleERC20TransactionCancelled(
     event: ERC20TransactionCancelled
 ): void {
-    let txn = ERC20Transaction.load(event.params.txnId.toString());
+    let txn = ERC20Transaction.load(
+        event.address.toHex() + event.params.txnId.toString()
+    );
     if (txn) {
         txn.txnStatus = "CANCELLED";
+        txn.executedOn = null;
         let id = event.address.toHex() + txn.contractAddr.toHex();
         let lockedERC20Balance = ERC20LockedBalance.load(id);
         if (lockedERC20Balance) {
@@ -236,24 +249,27 @@ export function handleERC20TransactionCancelled(
 export function handleERC721TransactionCreated(
     event: ERC721TransactionCreated
 ): void {
-    let txn = ERC721Transaction.load(event.params.txnId.toString());
+    const txnId = event.address.toHex() + event.params.txnId.toString();
+    let txn = ERC721Transaction.load(txnId);
     if (!txn) {
-        txn = new ERC721Transaction(event.params.txnId.toString());
+        txn = new ERC721Transaction(txnId);
         txn.to = event.params.to;
         txn.tokenId = event.params.tokenId;
         txn.contractAddr = event.params.contractAddr;
         txn.approval = BigInt.fromString("0");
         txn.disapproval = BigInt.fromString("0");
         txn.createdOn = event.block.timestamp;
+        txn.executedOn = null;
         txn.txnStatus = "CREATED";
         txn.approvedBy = [];
         txn.disapprovedBy = [];
+        txn.createdBy = event.address.toHex() + event.transaction.from.toHex();
 
         let wallet = Wallet.load(event.address.toHex());
         if (wallet) {
             let tempTxns = wallet.erc721Transactions;
             if (tempTxns) {
-                tempTxns.push(event.params.txnId.toString());
+                tempTxns.push(txnId);
                 wallet.erc721Transactions = tempTxns;
             }
             let id =
@@ -262,6 +278,8 @@ export function handleERC721TransactionCreated(
                 event.params.tokenId.toString();
             let lockedERC721Balance = new ERC721LockedBalance(id);
             lockedERC721Balance.lockedBool = true;
+            lockedERC721Balance.contractAddr = event.params.contractAddr;
+            lockedERC721Balance.tokenId = event.params.tokenId;
             lockedERC721Balance.save();
             wallet.save();
         }
@@ -272,7 +290,9 @@ export function handleERC721TransactionCreated(
 export function handleERC721TransactionApproved(
     event: ERC721TransactionApproved
 ): void {
-    let txn = ERC721Transaction.load(event.params.txnId.toString());
+    let txn = ERC721Transaction.load(
+        event.address.toHex() + event.params.txnId.toString()
+    );
     let approver = Signer.load(
         event.address.toHex() + event.params.approver.toHex()
     );
@@ -293,7 +313,9 @@ export function handleERC721TransactionApproved(
 export function handleERC721TransactionDisapproved(
     event: ERC721TransactionDisapproved
 ): void {
-    let txn = ERC721Transaction.load(event.params.txnId.toString());
+    let txn = ERC721Transaction.load(
+        event.address.toHex() + event.params.txnId.toString()
+    );
     let disapprover = Signer.load(
         event.address.toHex() + event.params.disapprover.toHex()
     );
@@ -313,9 +335,12 @@ export function handleERC721TransactionDisapproved(
 export function handleERC721TransactionExecuted(
     event: ERC721TransactionExecuted
 ): void {
-    let txn = ERC721Transaction.load(event.params.txnId.toString());
+    let txn = ERC721Transaction.load(
+        event.address.toHex() + event.params.txnId.toString()
+    );
     if (txn) {
         txn.txnStatus = "EXECUTED";
+        txn.executedOn = event.block.timestamp;
         let id =
             event.address.toHex() +
             txn.contractAddr.toHex() +
@@ -328,9 +353,12 @@ export function handleERC721TransactionExecuted(
 export function handleERC721TransactionCancelled(
     event: ERC721TransactionCancelled
 ): void {
-    let txn = ERC721Transaction.load(event.params.txnId.toString());
+    let txn = ERC721Transaction.load(
+        event.address.toHex() + event.params.txnId.toString()
+    );
     if (txn) {
         txn.txnStatus = "CANCELLED";
+        txn.executedOn = null;
         let id =
             event.address.toHex() +
             txn.contractAddr.toHex() +
@@ -344,9 +372,10 @@ export function handleERC721TransactionCancelled(
 export function handleERC1155TransactionCreated(
     event: ERC1155TransactionCreated
 ): void {
-    let txn = ERC1155Transaction.load(event.params.txnId.toString());
+    const txnId = event.address.toHex() + event.params.txnId.toString();
+    let txn = ERC1155Transaction.load(txnId);
     if (!txn) {
-        txn = new ERC1155Transaction(event.params.txnId.toString());
+        txn = new ERC1155Transaction(txnId);
         txn.to = event.params.to;
         txn.tokenId = event.params.tokenId;
         txn.contractAddr = event.params.contractAddr;
@@ -354,22 +383,29 @@ export function handleERC1155TransactionCreated(
         txn.approval = BigInt.fromString("0");
         txn.disapproval = BigInt.fromString("0");
         txn.createdOn = event.block.timestamp;
+        txn.executedOn = null;
         txn.txnStatus = "CREATED";
         txn.approvedBy = [];
         txn.disapprovedBy = [];
+        txn.createdBy = event.address.toHex() + event.transaction.from.toHex();
 
         let wallet = Wallet.load(event.address.toHex());
         if (wallet) {
             let tempTxns = wallet.erc1155Transactions;
             if (tempTxns) {
-                tempTxns.push(event.params.txnId.toString());
+                tempTxns.push(txnId);
                 wallet.erc1155Transactions = tempTxns;
             }
             let id =
                 event.address.toHex() +
                 event.params.contractAddr.toHex() +
                 event.params.tokenId.toString();
-            let lockedERC1155Balance = new ERC1155LockedBalance(id);
+            let lockedERC1155Balance = ERC1155LockedBalance.load(id);
+            if (!lockedERC1155Balance) {
+                lockedERC1155Balance = new ERC1155LockedBalance(id);
+                lockedERC1155Balance.contractAddr = event.params.contractAddr;
+                lockedERC1155Balance.tokenId = event.params.tokenId;
+            }
             lockedERC1155Balance.lockedBalance =
                 lockedERC1155Balance.lockedBalance.plus(event.params.amount);
             lockedERC1155Balance.save();
@@ -382,7 +418,9 @@ export function handleERC1155TransactionCreated(
 export function handleERC1155TransactionApproved(
     event: ERC1155TransactionApproved
 ): void {
-    let txn = ERC1155Transaction.load(event.params.txnId.toString());
+    let txn = ERC1155Transaction.load(
+        event.address.toHex() + event.params.txnId.toString()
+    );
     let approver = Signer.load(
         event.address.toHex() + event.params.approver.toHex()
     );
@@ -403,7 +441,9 @@ export function handleERC1155TransactionApproved(
 export function handleERC1155TransactionDisapproved(
     event: ERC1155TransactionDisapproved
 ): void {
-    let txn = ERC1155Transaction.load(event.params.txnId.toString());
+    let txn = ERC1155Transaction.load(
+        event.address.toHex() + event.params.txnId.toString()
+    );
     let disapprover = Signer.load(
         event.address.toHex() + event.params.disapprover.toHex()
     );
@@ -423,9 +463,12 @@ export function handleERC1155TransactionDisapproved(
 export function handleERC1155TransactionExecuted(
     event: ERC1155TransactionExecuted
 ): void {
-    let txn = ERC1155Transaction.load(event.params.txnId.toString());
+    let txn = ERC1155Transaction.load(
+        event.address.toHex() + event.params.txnId.toString()
+    );
     if (txn) {
         txn.txnStatus = "EXECUTED";
+        txn.executedOn = event.block.timestamp;
         let id =
             event.address.toHex() +
             txn.contractAddr.toHex() +
@@ -443,9 +486,12 @@ export function handleERC1155TransactionExecuted(
 export function handleERC1155TransactionCancelled(
     event: ERC1155TransactionCancelled
 ): void {
-    let txn = ERC1155Transaction.load(event.params.txnId.toString());
+    let txn = ERC1155Transaction.load(
+        event.address.toHex() + event.params.txnId.toString()
+    );
     if (txn) {
         txn.txnStatus = "CANCELLED";
+        txn.executedOn = null;
         let id =
             event.address.toHex() +
             txn.contractAddr.toHex() +
