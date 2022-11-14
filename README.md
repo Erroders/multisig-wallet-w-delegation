@@ -1,33 +1,101 @@
-# multisig-wallet-w-delegation
 
-A multisig wallet is a special wallet contract that releases funds (or any other assets stored) only when the majority of the key holders approve the transaction. Incorporating delegation for rights management reduces the friction for gaining the majority. With all the security of a conventional multisig wallet, this upgrade adds the flexibility to delegate the signing rights to a representative, thus saving time and money.
+# Multisig Wallet with Deligation
 
-> This project is a prototype and is not audited/optimized for industry needs. We do not recommend it to be used until the release of first beta version. However, we have limited resources so feel free to contribute with code, code review, design, bug reports, advice, documentation, or anything else you can think of.
+This is a multisig wallet with the added functionality of *delegation* where signers of a wallet can assign their voting rights to another signer.
 
-> Also note that the contract has been deployed Polygon Mubai Testnet and can be verified here [0xD5F80a6C0431305c354FCC338627F4b492434Bf3](https://mumbai.polygonscan.com/address/0xd5f80a6c0431305c354fcc338627f4b492434bf3). The security features of contract allows only the owner and assigned signers to interact with this contract. You would be required to deploy your own if interested to test. Feel free to contact for help.
+- *Multi-Sig*: Create a new wallet with multiple signers(members) with equal voting rights at the start. 
+- *Delegation*: Signers can temporarily grant their voting rights to another signer, increasing the receivers voting weight.
+- *Wallet Balance*: Anyone (signer or not) can add balance to the wallet by sending crypto to its address.
+- *Create Transaction*: Any signer who has not delegated their rights can create a transaction (transfer tokens to some other wallet) but it will only execute once at least 51% of signers approve the transaction.
+- *Any ERC20 Token*: This wallet supports all ERC20 tokens and not just the native ones.
+- *NFTs*: This wallet can not only just store ERC20 tokens but ERC721 and ERC1155 as well.🤩
 
-## Tech Stack Used
+This project is a prototype and is not audited/optimized for industry needs. We do not recommend it to be used until the release of first beta version. However, we have limited resources so feel free to contribute with code, code review, design, bug reports, advice, documentation, or anything else you can think of.
 
-- Next.js
-- TailwindCSS
-- Solidity
+## Support
+
+For support, Join our Telegram channel https://t.me/ERRORDERS.
+
+- [View Demo Link](https://multisigwallet-w-delegation.vercel.app/)
+- [View Deployment code](https://github.com/rg12301/multisig-wallet-w-delegation)
+- Person to contact: Nonit Mittal (NonitMittal#5796), Raghav Goyal (Raghav#6141), Vineet Mishra(vineet-mi), Sparsh Agarwal
+
+
+
+## Tech Stack
+
+**Client:** React, NextJs, TailwindCSS, GraphQL(Applo Client) 
+
+**BackEnd:** Solidity, Ethereum, Polygon
+
+**Deployment:** Alchmi, Spheron
+
+**Additional Technology:** EPNS, IPFS/Filecoin, Covalent , Hardhat, Remix IDE, Metamask, NFT.STORAGE(IPFS/Filecoin)
+Unstoppable Domain
+
+
+## Running Tests
+
+To run tests, run the following command
+
+```node
+  yarn dev
+```
+
+
+## Usage/Examples
+
+```javascript
+import Component from 'my-project'
+
+function App() {
+  return <Component />
+}
+```
+
+
+## Reviewed By
+
+This project is reviwed by the following companies:
+
+- Devfolio 
+- CoinDCX
 - Polygon
-- Ethereum
-- NFT.STORAGE(IPFS/Filecoin)
-- Unstoppable Domain
-- Metamask
-- Hardhat
-- The Graph
-- Remix IDE
+- Covalent
+- EPNS
 
-## Info
 
-- Multisig Wallet with Delegation
-- [Link to working code repository](https://github.com/rg12301/multisig-wallet-w-delegation)
-- [Live Demo Link](https://multisigwallet-w-delegation.vercel.app/)
-- [Video demo]()
-- Person to contact
-  - [Nonit Mittal](mailto:nonitmittal@gmail.com) (NonitMittal#5796)
-  - [Raghav Goyal](mailto:12301raghavgoyal@gmail.com) (Raghav#6141)
-  - [Vineet Mishra](mailto:vineetmishra2510@gmail.com)
-- UD registered email email account - nonitmittal@gmail.com
+
+## Optimizations
+
+To minimize the gas fees for a tracsaction we used GraphQL
+
+## License
+
+GPL-3.0 license
+
+UD registered email email account - nonitmittal@gmail.com
+
+
+
+
+## Lessons Learned
+
+Creating a full-stack three-tier application in a day was an overwhelming self-taken task. The core business logic behind this problem is very well formulated after hours of brainstorming and successfully executed as a prototype within the given time, however, the UI/UX could be enhanced in the future.
+
+
+## 🛠 Skills
+NextJs, TailwindCSS, Solidity, Smart Contracts...
+
+
+## 🚀 About Erroders
+
+
+
+## Features
+
+- Creat Multiple wallets
+- Add Multiple Number of Signers in a wallets 
+- This wallet supports all ERC20 tokens and not just the native ones. 
+- This wallet can not only just store ERC20 tokens but ERC721 and ERC1155 as well.🤩
+

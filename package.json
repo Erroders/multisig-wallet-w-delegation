@@ -10,6 +10,9 @@
   },
   "dependencies": {
     "@apollo/client": "^3.6.9",
+    "@epnsproject/backend-sdk-staging": "^2.0.3",
+    "@epnsproject/frontend-sdk-staging": "^1.8.5",
+    "@types/react-modal": "^3.13.1",
     "@uauth/js": "^2.3.0",
     "@uauth/web3modal": "^2.2.0",
     "@walletconnect/web3-provider": "^1.8.0",
@@ -22,6 +25,7 @@
     "nft.storage": "^7.0.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-modal": "^3.15.1",
     "react-tooltip": "^4.2.21",
     "web3modal": "^1.9.8"
   },

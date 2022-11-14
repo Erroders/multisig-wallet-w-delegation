@@ -82,16 +82,16 @@ type WalletMetadata @entity {
 }
 
 type ERC20LockedBalance @entity {
-    id: ID!   # wallet_address + contract_address
+    id: ID!
     lockedBalance: BigInt!
 }
 
 type ERC721LockedBalance @entity {
-    id: ID!    # wallet_address + contract_address + token_id
+    id: ID!
     lockedBool: Boolean!
 }
 
 type ERC1155LockedBalance @entity {
-    id: ID!    # wallet_address + contract_address + token_id
+    id: ID!
     lockedBalance: BigInt!
 }

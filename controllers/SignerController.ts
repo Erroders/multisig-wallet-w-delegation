@@ -1,15 +1,15 @@
 import { ethers } from "ethers";
-import { Signer } from "../utils/types";
-import MultisigWallet from "./../subgraph/abis/MultisigWallet.json";
 import ERC20ABI from "../utils/ERC20ABI.json";
+import { Signer } from "../utils/types";
 import { uploadToIpfs } from "../utils/uploadToIPFS";
+import MultisigWallet from "./../subgraph/abis/MultisigWallet.json";
 
 export async function addSigner(
     signer: ethers.Signer | null,
     walletAddress: string,
     signerData: Signer
 ) {
-    if (signer) {
+    if (signer && signerData.metadata) {
         const contract = new ethers.Contract(
             walletAddress,
             MultisigWallet.abi,
@@ -35,6 +35,7 @@ export async function delegate(
     walletAddress: string,
     to: string
 ) {
+    console.log(signer, walletAddress, to);
     if (signer) {
         const contract = new ethers.Contract(
             walletAddress,
@@ -75,7 +76,7 @@ export default async function deposit(
     signer: ethers.Signer,
     contract: string,
     amount: string,
-    walletAddress: string 
+    walletAddress: string
 ) {
     try {
         if (contract == "native") {

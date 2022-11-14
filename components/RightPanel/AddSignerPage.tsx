@@ -1,17 +1,19 @@
 import { SetStateAction, useState } from "react";
 import { addSigner } from "../../controllers/SignerController";
-import { Signer, SignerMetadata } from "../../utils/types";
+import { Signer, SignerMetadata, Wallet } from "../../utils/types";
 
 interface AddSignerProps {
   showAddSignerBox: boolean;
   setShowAddSignerBox: (value: SetStateAction<boolean>) => void;
   signer: Signer | null;
+  wallet: Wallet;
 }
 
 const AddSignerPage = ({
   showAddSignerBox,
   signer,
   setShowAddSignerBox,
+  wallet,
 }: AddSignerProps) => {
   const [txnCapCheckboxValue, setTxnCapCheckboxValue] = useState(false);
 
@@ -58,7 +60,10 @@ const AddSignerPage = ({
               txnCap: txnCapCheckboxValue ? e.target.txnCap.value : -1,
             };
 
-            addSigner(signer!.signer, signerData);
+            signer &&
+              addSigner(signer.signer, wallet.contractAddress, signerData).then(() => {
+                setShowAddSignerBox(false);
+              });
           }}
         >
           <div className="grid grid-cols-2 gap-10">
