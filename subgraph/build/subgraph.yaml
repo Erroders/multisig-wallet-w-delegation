@@ -7,8 +7,8 @@ dataSources:
     network: mumbai
     source:
       abi: WalletCreator
-      address: "0xE6Fc8e793124995dA4ABE7ffdDB2979Cc2Cf7878"
-      startBlock: 27810846
+      address: "0x7C2eeBd28938c7bEDFd70FeDF1f4E215794a9e6c"
+      startBlock: 29089253
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -20,11 +20,11 @@ dataSources:
         - WalletMetadata
       abis:
         - name: WalletCreator
-          file: WalletCreator/abis/WalletCreator.json
+          file: WalletCreator\abis\WalletCreator.json
       eventHandlers:
         - event: WalletCreated(indexed address,indexed address,string,string)
           handler: handleWalletCreated
-      file: WalletCreator/WalletCreator.wasm
+      file: WalletCreator\WalletCreator.wasm
 templates:
   - kind: ethereum/contract
     name: MultisigWallet
@@ -35,7 +35,7 @@ templates:
       kind: ethereum/events
       apiVersion: 0.0.6
       language: wasm/assemblyscript
-      file: templates/MultisigWallet/MultisigWallet.wasm
+      file: templates\MultisigWallet\MultisigWallet.wasm
       entities:
         - Signer
         - SignerMetadata
@@ -48,7 +48,7 @@ templates:
         - Wallet
       abis:
         - name: MultisigWallet
-          file: MultisigWallet/abis/MultisigWallet.json
+          file: MultisigWallet\abis\MultisigWallet.json
       eventHandlers:
         - event: Delegate(indexed address,indexed address)
           handler: handleDelegate
