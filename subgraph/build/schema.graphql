@@ -26,6 +26,7 @@ enum TransactionStatus {
 
 type ERC20Transaction @entity {
     id: ID!
+    txnId: BigInt!
     to: Bytes!
     contractAddr: Bytes!
     amount: BigInt!
@@ -41,6 +42,7 @@ type ERC20Transaction @entity {
 
 type ERC721Transaction @entity {
     id: ID!
+    txnId: BigInt!
     to: Bytes!
     contractAddr: Bytes!
     tokenId: BigInt!
@@ -56,6 +58,7 @@ type ERC721Transaction @entity {
 
 type ERC1155Transaction @entity {
     id: ID!
+    txnId: BigInt!
     to: Bytes!
     contractAddr: Bytes!
     tokenId: BigInt!

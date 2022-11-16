@@ -223,6 +223,15 @@ export class ERC20Transaction extends Entity {
     this.set("id", Value.fromString(value));
   }
 
+  get txnId(): BigInt {
+    let value = this.get("txnId");
+    return value!.toBigInt();
+  }
+
+  set txnId(value: BigInt) {
+    this.set("txnId", Value.fromBigInt(value));
+  }
+
   get to(): Bytes {
     let value = this.get("to");
     return value!.toBytes();
@@ -380,6 +389,15 @@ export class ERC721Transaction extends Entity {
     this.set("id", Value.fromString(value));
   }
 
+  get txnId(): BigInt {
+    let value = this.get("txnId");
+    return value!.toBigInt();
+  }
+
+  set txnId(value: BigInt) {
+    this.set("txnId", Value.fromBigInt(value));
+  }
+
   get to(): Bytes {
     let value = this.get("to");
     return value!.toBytes();
@@ -535,6 +553,15 @@ export class ERC1155Transaction extends Entity {
 
   set id(value: string) {
     this.set("id", Value.fromString(value));
+  }
+
+  get txnId(): BigInt {
+    let value = this.get("txnId");
+    return value!.toBigInt();
+  }
+
+  set txnId(value: BigInt) {
+    this.set("txnId", Value.fromBigInt(value));
   }
 
   get to(): Bytes {

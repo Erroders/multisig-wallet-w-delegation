@@ -121,10 +121,11 @@ export function handleSignerAdded(event: SignerAdded): void {
 export function handleERC20TransactionCreated(
     event: ERC20TransactionCreated
 ): void {
-    const txnId = event.address.toHex() + event.params.txnId.toString();
-    let txn = ERC20Transaction.load(txnId);
+    const txnID = event.address.toHex() + event.params.txnId.toString();
+    let txn = ERC20Transaction.load(txnID);
     if (!txn) {
-        txn = new ERC20Transaction(txnId);
+        txn = new ERC20Transaction(txnID);
+        txn.txnId = event.params.txnId;
         txn.to = event.params.to;
         txn.contractAddr = event.params.contractAddr;
         txn.amount = event.params.amount;
@@ -141,7 +142,7 @@ export function handleERC20TransactionCreated(
         if (wallet) {
             let tempTxns = wallet.erc20Transactions;
             if (tempTxns) {
-                tempTxns.push(txnId);
+                tempTxns.push(txnID);
                 wallet.erc20Transactions = tempTxns;
             }
             let id = event.address.toHex() + event.params.contractAddr.toHex();
@@ -149,9 +150,11 @@ export function handleERC20TransactionCreated(
             if (!lockedERC20Balance) {
                 lockedERC20Balance = new ERC20LockedBalance(id);
                 lockedERC20Balance.contractAddr = event.params.contractAddr;
+                lockedERC20Balance.lockedBalance = event.params.amount;
+            } else {
+                lockedERC20Balance.lockedBalance =
+                    lockedERC20Balance.lockedBalance.plus(event.params.amount);
             }
-            lockedERC20Balance.lockedBalance =
-                lockedERC20Balance.lockedBalance.plus(event.params.amount);
             lockedERC20Balance.save();
             wallet.save();
         }
@@ -249,10 +252,11 @@ export function handleERC20TransactionCancelled(
 export function handleERC721TransactionCreated(
     event: ERC721TransactionCreated
 ): void {
-    const txnId = event.address.toHex() + event.params.txnId.toString();
-    let txn = ERC721Transaction.load(txnId);
+    const txnID = event.address.toHex() + event.params.txnId.toString();
+    let txn = ERC721Transaction.load(txnID);
     if (!txn) {
-        txn = new ERC721Transaction(txnId);
+        txn = new ERC721Transaction(txnID);
+        txn.txnId = event.params.txnId;
         txn.to = event.params.to;
         txn.tokenId = event.params.tokenId;
         txn.contractAddr = event.params.contractAddr;
@@ -269,7 +273,7 @@ export function handleERC721TransactionCreated(
         if (wallet) {
             let tempTxns = wallet.erc721Transactions;
             if (tempTxns) {
-                tempTxns.push(txnId);
+                tempTxns.push(txnID);
                 wallet.erc721Transactions = tempTxns;
             }
             let id =
@@ -372,10 +376,11 @@ export function handleERC721TransactionCancelled(
 export function handleERC1155TransactionCreated(
     event: ERC1155TransactionCreated
 ): void {
-    const txnId = event.address.toHex() + event.params.txnId.toString();
-    let txn = ERC1155Transaction.load(txnId);
+    const txnID = event.address.toHex() + event.params.txnId.toString();
+    let txn = ERC1155Transaction.load(txnID);
     if (!txn) {
-        txn = new ERC1155Transaction(txnId);
+        txn = new ERC1155Transaction(txnID);
+        txn.txnId = event.params.txnId;
         txn.to = event.params.to;
         txn.tokenId = event.params.tokenId;
         txn.contractAddr = event.params.contractAddr;
@@ -393,7 +398,7 @@ export function handleERC1155TransactionCreated(
         if (wallet) {
             let tempTxns = wallet.erc1155Transactions;
             if (tempTxns) {
-                tempTxns.push(txnId);
+                tempTxns.push(txnID);
                 wallet.erc1155Transactions = tempTxns;
             }
             let id =
@@ -405,9 +410,13 @@ export function handleERC1155TransactionCreated(
                 lockedERC1155Balance = new ERC1155LockedBalance(id);
                 lockedERC1155Balance.contractAddr = event.params.contractAddr;
                 lockedERC1155Balance.tokenId = event.params.tokenId;
+                lockedERC1155Balance.lockedBalance = event.params.amount;
+            } else {
+                lockedERC1155Balance.lockedBalance =
+                    lockedERC1155Balance.lockedBalance.plus(
+                        event.params.amount
+                    );
             }
-            lockedERC1155Balance.lockedBalance =
-                lockedERC1155Balance.lockedBalance.plus(event.params.amount);
             lockedERC1155Balance.save();
             wallet.save();
         }
