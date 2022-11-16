@@ -1,3 +1,4 @@
+import makeBlockie from "ethereum-blockies-base64";
 import { ethers } from "ethers";
 import { useState } from "react";
 import Modal from "react-modal";
@@ -36,28 +37,33 @@ const CryptoCard = ({ data, signer, wallet }: CryptoCardProps) => {
     return (
         <div>
             <div className="group rounded-lg bg-gray-300 p-6" role="NFT Card">
-                <div className="flex w-full justify-center overflow-hidden rounded-md object-contain">
+                <div className="flex justify-center overflow-hidden rounded-md object-contain">
                     <img
-                        className="h-full w-full transition-transform duration-300 ease-in-out"
-                        src={data.logoUrl ? data.logoUrl : "/img_not_found.png"}
+                        className="h-20 w-20 rounded-full p-2 transition-transform duration-300 ease-in-out"
+                        src={data.logoUrl}
                         alt={data.contractName}
+                        onError={(target) => {
+                            target.currentTarget.onerror = null;
+                            const blockie = makeBlockie(data.contractAddr);
+                            target.currentTarget.src = blockie;
+                        }}
                     />
                 </div>
 
                 <div className="px-2 pt-2 pb-4">
-                    <div className="mb-2 flex justify-between">
-                        <h5 className="inline-block text-xl font-bold">
-                            {data.contractName}
+                    <div className="mb-2 flex flex-row items-baseline justify-between">
+                        <h5 className="text-base font-bold">
+                            {data.contractName.substring(0, 7) + "..."}
                         </h5>
-                        <p className="my-auto inline-block text-gray-500">
+                        <p className="text-sm text-gray-500">
                             {data.contractTickerSymbol}
                         </p>
                     </div>
 
-                    <p className="my-auto inline-block text-gray-500">
+                    <p className="py-0.5 text-sm text-gray-600">
                         Balance: {ethers.utils.formatUnits(data.balance)}
                     </p>
-                    <p className="my-auto inline-block text-gray-500">
+                    <p className="text-sm text-gray-600">
                         Locked Balance:{" "}
                         {ethers.utils.formatUnits(data.lockedBalance)}
                     </p>
@@ -66,8 +72,7 @@ const CryptoCard = ({ data, signer, wallet }: CryptoCardProps) => {
                 <button
                     className="btn-dark w-full "
                     disabled={data.balance <= 0}
-                    onClick={openModal}
-                >
+                    onClick={openModal}>
                     Transfer
                 </button>
                 {/* <button className="btn-dark w-full ">Deposit</button> */}
@@ -77,11 +82,10 @@ const CryptoCard = ({ data, signer, wallet }: CryptoCardProps) => {
                 isOpen={modalIsOpen}
                 onRequestClose={closeModal}
                 contentLabel="Example Modal"
-                style={customStyles}
-            >
-                <div className="min-w-[24rem]">
+                style={customStyles}>
+                <div className="min-w-[28rem] p-5">
                     <div className="mb-4 flex justify-between">
-                        <h2 className="my-auto inline-block text-xl font-semibold">
+                        <h2 className="my-auto inline-block text-xl font-bold">
                             Transfer Tokens
                         </h2>
                         <button className="btn-dark" onClick={closeModal}>
@@ -94,13 +98,13 @@ const CryptoCard = ({ data, signer, wallet }: CryptoCardProps) => {
                         onSubmit={async (e: any) => {
                             e.preventDefault();
                             if (signer) {
-                                // console.log(
-                                //     signer.signer,
-                                //     wallet.contractAddress,
-                                //     data.contractAddr,
-                                //     e.target.to.value,
-                                //     e.target.amount.value
-                                // );
+                                console.log(
+                                    signer.signer,
+                                    wallet.contractAddress,
+                                    data.contractAddr,
+                                    e.target.to.value,
+                                    e.target.amount.value
+                                );
                                 await createERC20Transaction(
                                     signer.signer,
                                     wallet.contractAddress,
@@ -108,18 +112,20 @@ const CryptoCard = ({ data, signer, wallet }: CryptoCardProps) => {
                                     e.target.to.value,
                                     e.target.amount.value
                                 );
+                                closeModal();
                             }
-                        }}
-                    >
+                        }}>
                         <input
                             type="text"
                             id="to"
+                            required
                             className="input my-2 border-gray-800"
                             placeholder="Address"
                         />
 
                         <input
                             type="text"
+                            required
                             id="amount"
                             className="input my-2"
                             placeholder="Amount"

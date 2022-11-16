@@ -14,6 +14,7 @@ const Home: NextPage = () => {
     const [wallets, setWallets] = useState<Wallet[]>([]);
     const [toggleAdd, setToggleAdd] = useState(false);
     const { signer } = useSignerContext();
+
     useEffect(() => {
         if (signer)
             fetchWallets(signer).then((wallets_) => {
@@ -37,8 +38,11 @@ const Home: NextPage = () => {
             remarks: event.target.ownerRemarks.value,
         };
 
+        console.log(ownerMetadata, walletMetadata);
+
         if (signer) {
             await createWallet(signer.signer, walletMetadata, ownerMetadata);
+            setToggleAdd(false);
         }
     }
     return (
@@ -56,22 +60,20 @@ const Home: NextPage = () => {
                 <RightPane>
                     <div className="relative h-full w-full">
                         {toggleAdd ? (
-                            <div className="relative mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
+                            <div className="relative mx-auto max-w-screen-xl p-4 sm:px-6 lg:px-8">
                                 <p
                                     className="top-10 right-10 w-full cursor-pointer text-right font-mono text-3xl"
                                     onClick={() => {
                                         setToggleAdd((state) => !state);
-                                    }}
-                                >
+                                    }}>
                                     x
                                 </p>
                                 <form
                                     action="submit"
-                                    className="mx-auto mt-8 mb-0 max-w-md space-y-4"
-                                    onSubmit={handleSubmit}
-                                >
+                                    className="mx-auto mb-0 max-w-md space-y-4"
+                                    onSubmit={handleSubmit}>
                                     <div className="mx-auto max-w-lg text-center">
-                                        <h1 className="text-2xl font-bold sm:text-3xl">
+                                        <h1 className="text-2xl font-bold">
                                             Add Wallet Details
                                         </h1>
                                     </div>
@@ -90,7 +92,7 @@ const Home: NextPage = () => {
                                     />
 
                                     <div className="mx-auto max-w-lg text-center">
-                                        <h1 className="text-2xl font-bold sm:text-3xl">
+                                        <h1 className="text-2xl font-bold">
                                             Add Owner Details
                                         </h1>
                                     </div>
@@ -139,8 +141,7 @@ const Home: NextPage = () => {
                                     <div className="flex w-full items-center justify-center">
                                         <button
                                             type="submit"
-                                            className="inline-block w-full rounded bg-blue-500 px-5 py-3 text-sm font-medium text-white"
-                                        >
+                                            className="inline-block w-full rounded bg-blue-500 px-5 py-3  font-semibold text-white">
                                             Create Wallet
                                         </button>
                                     </div>
@@ -169,8 +170,7 @@ const Home: NextPage = () => {
                                     type="button"
                                     onClick={() => {
                                         setToggleAdd((state) => !state);
-                                    }}
-                                >
+                                    }}>
                                     <span className="font-mono text-2xl font-medium text-gray-900">
                                         +
                                     </span>
