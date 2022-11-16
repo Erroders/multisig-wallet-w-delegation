@@ -222,7 +222,7 @@ contract MultisigWallet is Ownable, ERC721Holder, ERC1155Holder {
         } else {
             IERC20 erc20Contract = IERC20(contractAddr_);
             require(
-                erc20Contract.balanceOf(contractAddr_) -
+                erc20Contract.balanceOf(address(this)) -
                     erc20LockedBalance[contractAddr_] >=
                     amount_,
                 "Insufficient balance in wallet."
@@ -427,7 +427,7 @@ contract MultisigWallet is Ownable, ERC721Holder, ERC1155Holder {
             "Invalid request."
         );
         IERC1155 erc1155Contract = IERC1155(contractAddr_);
-        uint256 balance = erc1155Contract.balanceOf(contractAddr_, tokenId_);
+        uint256 balance = erc1155Contract.balanceOf(address(this), tokenId_);
         require(balance > 0, "NFT not owned by wallet.");
         require(
             balance - erc1155LockedBalance[contractAddr_][tokenId_] >= amount_,

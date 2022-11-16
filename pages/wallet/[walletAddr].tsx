@@ -1,3 +1,4 @@
+import makeBlockie from "ethereum-blockies-base64";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -22,7 +23,6 @@ const WalletPage = (props: Props) => {
 
     useEffect(() => {
         const { walletAddr } = router.query;
-        console.log(walletAddr);
 
         const fetchUser_ = async () => {
             if (signer && signer.signer) {
@@ -50,7 +50,10 @@ const WalletPage = (props: Props) => {
                     name="description"
                     content={wallet ? wallet.metadata.description : ""}
                 />
-                {/* <link rel="icon" href="/favicon.ico" /> */}
+                <link
+                    rel="icon"
+                    href={wallet ? makeBlockie(wallet?.contractAddress) : ""}
+                />
             </Head>
 
             <main className="grid grid-cols-6">
@@ -59,7 +62,7 @@ const WalletPage = (props: Props) => {
                     {user && wallet && signer && (
                         <form
                             action=""
-                            className="mt-28 w-full"
+                            className="mt-16 w-full"
                             onSubmit={
                                 user.delegateTo
                                     ? (e) => {
@@ -71,39 +74,42 @@ const WalletPage = (props: Props) => {
                                       }
                                     : (e) => {
                                           e.preventDefault();
-                                          if (delegate_)
+                                          if (delegate_) {
                                               delegate(
                                                   signer.signer,
                                                   wallet.contractAddress,
                                                   delegate_
                                               );
+                                          }
                                       }
-                            }
-                        >
+                            }>
                             {user.delegateTo ? (
                                 <div className="flex w-full items-center justify-center space-x-5">
                                     <span>
                                         Delegated to&nbsp;
                                         <span className="font-bold">
                                             {"0x" +
-                                                user.delegateTo.split("0x")[2]}
+                                                user.delegateTo
+                                                    .split("0x")[2]
+                                                    .toString()
+                                                    .substring(0, 25) +
+                                                "..."}
                                         </span>
                                     </span>
                                     <button
                                         type="submit"
-                                        className="btn-red w-2/5 font-medium"
-                                    >
+                                        className="btn-red w-5/12 font-medium">
                                         Revoke Delegation
                                     </button>
                                 </div>
-                            ) : (
+                            ) : wallet.signers.length != 1 ? (
                                 <div className="flex w-full space-x-5">
                                     <DropDown
                                         menuOptions={wallet.signers
                                             .filter((signer_) => {
                                                 return (
-                                                    signer.address !=
-                                                    signer_.address
+                                                    signer.address.toLowerCase() !=
+                                                    signer_.address.toLowerCase()
                                                 );
                                             })
                                             .map((signer_) => {
@@ -111,7 +117,7 @@ const WalletPage = (props: Props) => {
                                                     item: signer_.metadata
                                                         ? signer_.metadata
                                                               .name +
-                                                          "(" +
+                                                          " (" +
                                                           signer_.metadata.walletAddress.substring(
                                                               0,
                                                               15
@@ -126,19 +132,24 @@ const WalletPage = (props: Props) => {
                                     />
                                     <button
                                         type="submit"
-                                        className="btn-green w-2/5"
-                                    >
+                                        className="btn-green w-2/5">
                                         <span className="font-medium">
                                             Delegate
                                         </span>
                                     </button>
                                 </div>
+                            ) : (
+                                <></>
                             )}
                         </form>
                     )}
                 </LeftPane>
                 <RightPane>
-                    {wallet ? <RightPanel wallet={wallet} /> : <></>}
+                    {wallet ? (
+                        <RightPanel wallet={wallet} user={user} />
+                    ) : (
+                        <></>
+                    )}
                 </RightPane>
             </main>
 

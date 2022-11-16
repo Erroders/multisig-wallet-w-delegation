@@ -7,8 +7,8 @@ dataSources:
     network: mumbai
     source:
       abi: WalletCreator
-      address: "0xE6Fc8e793124995dA4ABE7ffdDB2979Cc2Cf7878"
-      startBlock: 27810846
+      address: "0x9355F2206BD3c2d199aD88F0F56766c86851A9a3"
+      startBlock: 29184000
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6

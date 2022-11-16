@@ -72,12 +72,15 @@ async function asERC20Token(
     walletAddr: string,
     tokenData: any
 ): Promise<ERC20Token> {
+    let id = tokenData.native_token
+        ? walletAddr.toLowerCase() +
+          "0x0000000000000000000000000000000000000000"
+        : walletAddr.toLowerCase() + tokenData.contract_address.toLowerCase();
     const graphData = await executeQuery(`
       query{
-        erc20LockedBalance(id : "${
-            walletAddr.toLowerCase() + tokenData.contract_address.toLowerCase()
-        }"){
+        erc20LockedBalance(id : "${id}"){
           id
+          contractAddr
           lockedBalance
         }
       }`);
@@ -88,8 +91,8 @@ async function asERC20Token(
             : tokenData.contract_address,
         contractTickerSymbol: tokenData.contract_ticker_symbol,
         balance: tokenData.balance,
-        lockedBalance: graphData.erc20LockedBalances
-            ? graphData.erc20LockedBalances.lockedBalance
+        lockedBalance: graphData.erc20LockedBalance
+            ? graphData.erc20LockedBalance.lockedBalance
             : 0,
         decimals: tokenData.contract_decimals,
         quoteRate: tokenData.quote_rate,
@@ -114,6 +117,8 @@ async function asERC721Token(
                   nft.token_id
               }"){
                 id
+                contractAddr
+                tokenId
                 lockedBool
               }
             }`);
@@ -151,6 +156,8 @@ async function asERC1155Token(
                 nft.token_id
             }"){
               id
+              contractAddr
+              tokenId
               lockedBalance
             }
           }`);
@@ -184,8 +191,7 @@ async function getTokenData(walletAddress: string): Promise<any> {
 
     const axiosRawData = await axios.get(url);
     const allTokens = axiosRawData.data.data.items;
-
-    //   console.log(allTokens);
+    console.log(allTokens);
 
     for (let i = 0; i < allTokens.length; i++) {
         const tokenData = allTokens[i];
@@ -199,13 +205,13 @@ async function getTokenData(walletAddress: string): Promise<any> {
                     walletAddress,
                     tokenData
                 );
-                erc1155Tokens = erc1155Tokens_;
+                erc1155Tokens = [...erc1155Tokens, ...erc1155Tokens_];
             } else {
                 const erc721Tokens_ = await asERC721Token(
                     walletAddress,
                     tokenData
                 );
-                erc721Tokens = erc721Tokens_;
+                erc721Tokens = [...erc721Tokens, ...erc721Tokens_];
             }
         } else if (
             tokenData.type == "cryptocurrency" ||
@@ -223,23 +229,24 @@ async function getTokenData(walletAddress: string): Promise<any> {
     };
 }
 
-// ------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------
 
-// - fetchWallets(login signer address);  // don not return everything return (walletaddr, name, desc, signers[])
+// return basic details of all the wallets the user is Signer in.
+// don not return everything return (walletaddr, name, desc, signers[])
 export async function fetchWallets(signer: Signer): Promise<Wallet[]> {
     const query = `query{
-        wallets(orderBy: createdOn, orderDirection:desc){
+        wallets(where : { signers_: { address: "${signer.address.toLowerCase()}" } }, orderBy: createdOn, orderDirection: desc){
           id
           createdOn
-          signers(where:{address:"${signer.address.toLowerCase()}"}){
-            id
+          signers{
+            address
           }
           metadata{
             title
             description
           }
         }
-      }`;
+    }`;
     const data = await executeQuery(query);
 
     console.log(data);
@@ -262,93 +269,141 @@ export async function fetchWallets(signer: Signer): Promise<Wallet[]> {
     });
 }
 
-// - fetchWallet(walletaddr) // return Wallet everrything
+// return every details of a wallet
+// also fetching details of ERC tokens from Covalent API
 export async function fetchWallet(walletAddr: string): Promise<Wallet | null> {
     if (walletAddr) {
         const query = `query{
-    wallet(id:"${walletAddr.toLowerCase()}"){
-      id
-      owner{
-        id
-        address
-        weight
-        txnCap
-        delegateTo
-        metadata{
-          name
-          contactNo
-          email
-          walletAddress
-          role
-          remarks
-        }
-      }
-      signers{
-        id
-        address
-        weight
-        txnCap
-        delegateTo
-        metadata{
-          name
-          contactNo
-          email
-          walletAddress
-          role
-          remarks
-        }
-      }
-      createdOn
-      erc20Transactions{
-        id
-        to
-        contractAddr
-        amount
-        approval
-        disapproval
-        txnStatus
-        approvedBy{
-          id
-        }
-        disapprovedBy{
-          id
-        }
-        createdOn
-      }
-      erc721Transactions{
-        id
-        to
-        contractAddr
-        tokenId
-        approval
-        disapproval
-        txnStatus
-        approvedBy{
-          id
-        }
-        disapprovedBy{
-          id
-        }
-        createdOn
-      }
-      erc1155Transactions{
-        id
-      }
-      metadata{
-        title
-        description
-      }
-    }
-  }`;
+                        wallet(id:"${walletAddr.toLowerCase()}"){
+                            id
+                            owner{
+                                address
+                                weight
+                                txnCap
+                                delegateTo
+                                metadata{
+                                    name
+                                    contactNo
+                                    email
+                                    walletAddress
+                                    role
+                                    remarks
+                                }
+                            }
+                            signers{
+                                address
+                                weight
+                                txnCap
+                                delegateTo
+                                metadata{
+                                    name
+                                    contactNo
+                                    email
+                                    walletAddress
+                                    role
+                                    remarks
+                                }
+                            }
+                            createdOn
+                            erc20Transactions(orderBy: txnId, orderDirection:desc){
+                                txnId
+                                to
+                                contractAddr
+                                amount
+                                approval
+                                disapproval
+                                txnStatus
+                                createdBy{
+                                    address
+                                }
+                                approvedBy{
+                                    address
+                                }
+                                disapprovedBy{
+                                    address
+                                }
+                                createdOn
+                                executedOn
+                            }
+                            erc721Transactions(orderBy: txnId, orderDirection:desc){
+                                txnId
+                                to
+                                contractAddr
+                                tokenId
+                                approval
+                                disapproval
+                                txnStatus
+                                createdBy{
+                                    address
+                                }
+                                approvedBy{
+                                    address
+                                }
+                                disapprovedBy{
+                                    address
+                                }
+                                createdOn
+                                executedOn
+                            }
+                            erc1155Transactions(orderBy: txnId, orderDirection:desc){
+                                txnId
+                                to
+                                contractAddr
+                                tokenId
+                                amount
+                                approval
+                                disapproval
+                                txnStatus
+                                createdBy{
+                                    address
+                                }
+                                approvedBy{
+                                    address
+                                }
+                                disapprovedBy{
+                                    address
+                                }
+                                createdOn
+                                executedOn
+                            }
+                            metadata{
+                                title
+                                description
+                            }
+                        }
+                    }`;
         const data = await executeQuery(query);
-        console.log(data);
+
         if (data.wallet) {
             const { erc20Tokens, erc721Tokens, erc1155Tokens } =
                 await getTokenData(walletAddr);
+
+            const owner_: Signer = {
+                address: data.wallet.owner.address,
+                weight: data.wallet.owner.weight,
+                delegateTo: data.wallet.owner.delegateTo,
+                metadata: data.wallet.owner.metadata as SignerMetadata,
+                txnCap: data.wallet.owner.txnCap,
+                signer: null,
+            };
+
+            const walletSigners = data.wallet.signers as any[];
+            const signers_ = walletSigners.map((signer_) => {
+                const walletSigner: Signer = {
+                    address: signer_.address,
+                    weight: signer_.weight,
+                    delegateTo: signer_.delegateTo,
+                    metadata: signer_.metadata as SignerMetadata,
+                    txnCap: signer_.txnCap,
+                    signer: null,
+                };
+                return walletSigner;
+            });
+
             const wallet_: Wallet = {
                 contractAddress: data.wallet.id,
-                owner: data.wallet.owner as Signer,
-                signers: data.wallet.signers as Signer[],
+                owner: owner_,
+                signers: signers_,
                 erc20Transactions: data.wallet
                     .erc20Transactions as ERC20Transaction[],
                 erc721Transactions: data.wallet
@@ -361,6 +416,7 @@ export async function fetchWallet(walletAddr: string): Promise<Wallet | null> {
                 erc721tokens: erc721Tokens,
                 erc1155tokens: erc1155Tokens,
             };
+            console.log(wallet_);
             return wallet_;
         } else {
             return null;
@@ -369,32 +425,32 @@ export async function fetchWallet(walletAddr: string): Promise<Wallet | null> {
     return null;
 }
 
-// - getSigner(signer addrress) // return signer everrything
+// return every Signer Details for a particular wallet address
 export async function fetchSigner(
     walletAddr: string,
     signer: ethers.Signer
 ): Promise<Signer | null> {
     const signerAddr_ = await signer.getAddress();
-    const id = walletAddr.toLowerCase() + signerAddr_.toLowerCase();
-    const query = `
-  query{
-    signer(id: "${id}"){
-      id
-      address
-      weight
-      txnCap
-      delegateTo
-      metadata{
-        name
-        contactNo
-        email
-        walletAddress
-        role
-        remarks
-      }
-    }
-  }`;
+    const signerId = walletAddr.toLowerCase() + signerAddr_.toLowerCase();
+    const query = `query{
+                    signer(id: "${signerId}"){
+                        id
+                        address
+                        weight
+                        txnCap
+                        delegateTo
+                        metadata{
+                            name
+                            contactNo
+                            email
+                            walletAddress
+                            role
+                            remarks
+                        }
+                    }
+                }`;
     const data = await executeQuery(query);
+    console.log(data);
     if (data.signer) {
         const userData: Signer = {
             address: data.signer.address,
