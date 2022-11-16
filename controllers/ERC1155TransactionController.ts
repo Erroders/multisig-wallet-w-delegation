@@ -16,7 +16,12 @@ export async function createERC1155Transaction(
             signer
         );
         try {
-            const txn = await contract.createERC1155Transaction(to, contractAddr, tokenId, amount);
+            const txn = await contract.createERC1155Transaction(
+                to,
+                contractAddr,
+                tokenId,
+                amount
+            );
             const txnStatus = await txn.wait();
             console.log(txnStatus);
         } catch (error) {
@@ -58,7 +63,9 @@ export async function disapproveERC1155Transaction(
             signer
         );
         try {
-            const txn = await contract.disapproveERC1155Transaction(Number(txnId));
+            const txn = await contract.disapproveERC1155Trasaction(
+                Number(txnId)
+            );
             const txnStatus = await txn.wait();
             console.log(txnStatus);
         } catch (error) {

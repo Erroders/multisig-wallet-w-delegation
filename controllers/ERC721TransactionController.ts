@@ -15,7 +15,11 @@ export async function createERC721Transaction(
             signer
         );
         try {
-            const txn = await contract.createERC721Transaction(to, contractAddr, tokenId);
+            const txn = await contract.createERC721Transaction(
+                to,
+                contractAddr,
+                tokenId
+            );
             const txnStatus = await txn.wait();
             console.log(txnStatus);
         } catch (error) {
@@ -57,7 +61,9 @@ export async function disapproveERC721Transaction(
             signer
         );
         try {
-            const txn = await contract.disapproveERC721Transaction(Number(txnId));
+            const txn = await contract.disapproveERC721Trasaction(
+                Number(txnId)
+            );
             const txnStatus = await txn.wait();
             console.log(txnStatus);
         } catch (error) {

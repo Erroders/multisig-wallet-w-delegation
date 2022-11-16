@@ -16,7 +16,12 @@ export async function createERC20Transaction(
         );
         const amount_ = ethers.utils.parseUnits(amount.toString(), "ether");
         try {
-            const txn = await contract.createERC20Transaction(to, contractAddr, amount_);
+            console.log(to, contractAddr, amount_);
+            const txn = await contract.createERC20Transaction(
+                to,
+                contractAddr,
+                amount_
+            );
             const txnStatus = await txn.wait();
             console.log(txnStatus);
         } catch (error) {
@@ -58,7 +63,7 @@ export async function disapproveERC20Transaction(
             signer
         );
         try {
-            const txn = await contract.disapproveERC20Transaction(Number(txnId));
+            const txn = await contract.disapproveERC20Trasaction(Number(txnId));
             const txnStatus = await txn.wait();
             console.log(txnStatus);
         } catch (error) {
