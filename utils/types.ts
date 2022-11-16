@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 export type Signer = {
     address: string;
     weight?: number;
-    delegateTo?: string;
+    delegateTo?: string | null;
     metadata?: SignerMetadata;
     txnCap?: number;
     signer: ethers.Signer | null;
@@ -24,43 +24,49 @@ export type WalletMetadata = {
 };
 
 export type ERC20Transaction = {
-    id: string;
+    txnId: string;
     to: string;
     contractAddr: string;
     amount: number;
     approval: number;
     disapproval: number;
     txnStatus: string;
+    createdBy: string;
     approvedBy: string[];
     disapprovedBy: string[];
     createdOn: string;
+    executedOn?: string;
 };
 
 export type ERC721Transaction = {
-    id: string;
+    txnId: string;
     to: string;
     contractAddr: string;
-    tokenID: number;
+    tokenId: number;
     approval: number;
     disapproval: number;
     txnStatus: string;
+    createdBy: string;
     approvedBy: string[];
     disapprovedBy: string[];
     createdOn: string;
+    executedOn?: string;
 };
 
 export type ERC1155Transaction = {
-    id: string;
+    txnId: string;
     to: string;
     contractAddr: string;
-    tokenID: number;
+    tokenId: number;
     amount: number;
     approval: number;
     disapproval: number;
     txnStatus: string;
+    createdBy: string;
     approvedBy: string[];
     disapprovedBy: string[];
     createdOn: string;
+    executedOn?: string;
 };
 
 export type Wallet = {
