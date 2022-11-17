@@ -10,16 +10,21 @@ This is a multisig wallet with the added functionality of *delegation* where sig
 - *Any ERC20 Token*: This wallet supports all ERC20 tokens and not just the native ones.
 - *NFTs*: This wallet can not only just store ERC20 tokens but ERC721 and ERC1155 as well.🤩
 
-This project is a prototype and is not audited/optimized for industry needs. We do not recommend it to be used until the release of first beta version. However, we have limited resources so feel free to contribute with code, code review, design, bug reports, advice, documentation, or anything else you can think of.
-Optimizations : To minimize the gas fees for a tracsaction we used The Graph Protocol.
+This project is a prototype and is not audited/optimized for industry needs. We do not recommend it to be used until the release of first beta version. However, we have limited resources so feel free to contribute with code, code review, design, bug reports, advice, documentation, or anything else you can think of. \
+Optimizations : To minimize the gas fees for a transaction we used The Graph Protocol.
 
 ## Tech Stack
 
 **Smart Contract** : Solidity, Remix IDE
+
 **Blockchain** : Polygon (Mumbai Testnet)
+
 **Client** : Next.js, TailwindCSS,  GraphQL(Apollo Client)
+
 **Wallet** : Metamask, Unstoppable Domain
+
 **Backend** : Hardhat, Ethers.js, The Graph Protocol, Web3Modal
+
 **Deployment** : Alchemy(Contract), Spheron(App)
 
 ## Features
