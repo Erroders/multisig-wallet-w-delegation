@@ -8,7 +8,7 @@ dataSources:
     source:
       abi: WalletCreator
       address: "0x9355F2206BD3c2d199aD88F0F56766c86851A9a3"
-      startBlock: 29184000
+      startBlock: 29184100
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6

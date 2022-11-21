@@ -2,7 +2,7 @@
     "mumbai": {
         "WalletCreator": {
             "address": "0x9355F2206BD3c2d199aD88F0F56766c86851A9a3",
-            "startBlock": 29184000
+            "startBlock": 29184100
         }
     }
 }
