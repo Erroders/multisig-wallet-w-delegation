@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+import makeBlockie from "ethereum-blockies-base64";
 import { ERC1155Token, ERC721Token } from "../../utils/types";
 
 interface NFTCardProps {
@@ -14,8 +15,15 @@ const NFTCard = ({ data }: NFTCardProps) => {
                 <div className="flex w-full justify-center overflow-hidden rounded-md object-contain">
                     <img
                         className="h-full w-full transition-transform duration-300 ease-in-out group-hover:scale-110"
-                        src={data.url ? data.url : "/img_not_found.png"}
+                        src={data.url}
                         alt={data.contractName}
+                        onError={(target) => {
+                            target.currentTarget.onerror = null;
+                            const blockie = makeBlockie(
+                                data.contractAddr + data.tokenId
+                            );
+                            target.currentTarget.src = blockie;
+                        }}
                     />
                 </div>
 
