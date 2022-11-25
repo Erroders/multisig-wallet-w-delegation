@@ -5,27 +5,28 @@ import { Wallet } from "../utils/types";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
 import { useRouter } from "next/router";
+import { useSignerContext } from "../contexts/Signer";
 TimeAgo.setDefaultLocale(en.locale);
 TimeAgo.addLocale(en);
 type Props = { wallet: Wallet };
 
 const WalletCard = ({ wallet }: Props) => {
     const timeAgo = new TimeAgo("en-US");
+    const { signer } = useSignerContext();
     const router = useRouter();
+
     return (
         <div
             className="relative block cursor-pointer rounded border bg-blue-100 py-5 px-10"
             onClick={() => {
                 router.push(`/wallet/${wallet.contractAddress}`);
-            }}
-        >
+            }}>
             <div className="flex w-full justify-between">
                 <div
                     className="h-20 w-20 cursor-pointer overflow-hidden rounded"
                     onClick={() => {
                         navigator.clipboard.writeText(wallet.contractAddress);
-                    }}
-                >
+                    }}>
                     <img
                         src={makeBlockie(wallet.contractAddress)}
                         alt="Signer Blockie Image"
@@ -40,6 +41,21 @@ const WalletCard = ({ wallet }: Props) => {
                             new Date(Number(wallet.createdOn) * 1000)
                         )}
                     </span>
+                    {signer &&
+                    wallet.owner.address.toLowerCase() ==
+                        signer?.address.toLowerCase() ? (
+                        <>
+                            <span className="font-mono text-sm font-semibold">
+                                #owner
+                            </span>
+                        </>
+                    ) : (
+                        <>
+                            <span className="font-mono text-sm font-medium">
+                                #signer
+                            </span>
+                        </>
+                    )}
                 </div>
             </div>
 
@@ -48,7 +64,9 @@ const WalletCard = ({ wallet }: Props) => {
             </h5>
 
             <p className="mt-2 hidden text-sm sm:block">
-                {wallet.metadata.description}
+                {wallet.metadata.description.length > 150
+                    ? wallet.metadata.description.substring(0, 150) + "..."
+                    : wallet.metadata.description}
             </p>
         </div>
     );
