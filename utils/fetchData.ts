@@ -238,8 +238,8 @@ export async function fetchWallets(signer: Signer): Promise<Wallet[]> {
         wallets(where : { signers_: { address: "${signer.address.toLowerCase()}" } }, orderBy: createdOn, orderDirection: desc){
           id
           createdOn
-          signers{
-            address
+          owner{
+              address
           }
           metadata{
             title
@@ -252,10 +252,14 @@ export async function fetchWallets(signer: Signer): Promise<Wallet[]> {
     console.log(data);
     const wallets = data.wallets as any[];
     return wallets.map((wallet_) => {
+        const owner_: Signer = {
+            address: wallet_.owner.address,
+            signer: null,
+        };
         const wallet: Wallet = {
             contractAddress: wallet_.id,
-            owner: signer,
-            signers: wallet_.signers,
+            owner: owner_,
+            signers: [],
             erc20Transactions: [],
             erc721Transactions: [],
             erc1155Transactions: [],
