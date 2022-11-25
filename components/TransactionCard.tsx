@@ -32,7 +32,11 @@ const ERC20TransactionCard = ({
     return signer ? (
         <div
             className={`group flex items-center justify-start rounded p-5 ${
-                txn.txnStatus == "EXECUTED" ? "bg-emerald-100" : "bg-yellow-100"
+                txn.txnStatus == "EXECUTED"
+                    ? "bg-emerald-100"
+                    : txn.txnStatus == "CANCELLED"
+                    ? "bg-red-100"
+                    : "bg-yellow-100"
             }`}>
             <div className="flex w-min items-center space-x-4 pr-2">
                 <span className="min-w-max px-2 font-mono text-sm font-medium">
