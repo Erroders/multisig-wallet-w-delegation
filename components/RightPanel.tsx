@@ -21,7 +21,7 @@ enum rightPanelSectionOptions {
 }
 
 const RightPane = ({ wallet, user }: Props) => {
-    const [typeOfToken, setTypeOfToken] = useState(0);
+    // const [typeOfToken, setTypeOfToken] = useState(0);
     const [showAddSignerBox, setShowAddSignerBox] = useState(false);
     const [rightPanelSection, setRightPanelSection] =
         useState<rightPanelSectionOptions>(rightPanelSectionOptions.CRYPTO);
@@ -31,10 +31,8 @@ const RightPane = ({ wallet, user }: Props) => {
         <>
             <TopSectionPage
                 setShowAddSignerBox={setShowAddSignerBox}
-                setTypeOfToken={setTypeOfToken}
                 showAddSignerBox={showAddSignerBox}
                 signer={signer}
-                typeOfToken={typeOfToken}
                 wallet={wallet}
             />
 
@@ -102,7 +100,7 @@ const RightPane = ({ wallet, user }: Props) => {
                 </ul>
 
                 {rightPanelSection === rightPanelSectionOptions.CRYPTO && (
-                    <CryptoPage signer={signer} wallet={wallet} />
+                    <CryptoPage signer={signer} wallet={wallet} user={user} />
                 )}
                 {rightPanelSection === rightPanelSectionOptions.NFTS && (
                     <NFTPage signer={signer} wallet={wallet} />

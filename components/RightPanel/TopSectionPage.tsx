@@ -9,8 +9,6 @@ interface TopSectionPageProps {
     signer: Signer | null;
     showAddSignerBox: boolean;
     setShowAddSignerBox: (value: SetStateAction<boolean>) => void;
-    typeOfToken: number;
-    setTypeOfToken: (value: SetStateAction<number>) => void;
 }
 
 const TopSectionPage = ({
@@ -18,8 +16,6 @@ const TopSectionPage = ({
     signer,
     setShowAddSignerBox,
     showAddSignerBox,
-    typeOfToken,
-    setTypeOfToken,
 }: TopSectionPageProps) => {
     const timeAgo = new TimeAgo("en-US");
 
@@ -67,7 +63,6 @@ const TopSectionPage = ({
                         </span>
                         <span className="text-xs">
                             Created {timeAgo.format(new Date())}
-                            {/* {timeAgo.format(new Date(wallet.createdOn))} */}
                         </span>
                         <div className="mt-8 flex items-center justify-between space-x-16 px-4">
                             <div className="flex flex-col items-center tracking-tighter">
@@ -76,15 +71,18 @@ const TopSectionPage = ({
                                 </p>
                                 <p className="text-xs">Signers</p>
                             </div>
-                            {signer && !showAddSignerBox && (
-                                <button
-                                    className="btn-blue min-w-[16rem]"
-                                    onClick={() => {
-                                        setShowAddSignerBox(true);
-                                    }}>
-                                    Add Signer
-                                </button>
-                            )}
+                            {signer &&
+                                signer.address.toLowerCase() ===
+                                    wallet.owner.address.toLowerCase() &&
+                                !showAddSignerBox && (
+                                    <button
+                                        className="btn-blue min-w-[16rem]"
+                                        onClick={() => {
+                                            setShowAddSignerBox(true);
+                                        }}>
+                                        Add Signer
+                                    </button>
+                                )}
                         </div>
                     </div>
                 </div>
