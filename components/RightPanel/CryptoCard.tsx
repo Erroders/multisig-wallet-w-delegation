@@ -9,9 +9,10 @@ interface CryptoCardProps {
     signer: Signer | null;
     data: ERC20Token;
     wallet: Wallet;
+    user: Signer | null;
 }
 
-const CryptoCard = ({ data, signer, wallet }: CryptoCardProps) => {
+const CryptoCard = ({ data, signer, wallet, user }: CryptoCardProps) => {
     const [modalIsOpen, setModalIsOpen] = useState(false);
 
     const customStyles = {
@@ -69,13 +70,14 @@ const CryptoCard = ({ data, signer, wallet }: CryptoCardProps) => {
                     </p>
                 </div>
 
-                <button
-                    className="btn-dark w-full "
-                    disabled={data.balance <= 0}
-                    onClick={openModal}>
-                    Transfer
-                </button>
-                {/* <button className="btn-dark w-full ">Deposit</button> */}
+                {user && !user?.delegateTo && (
+                    <button
+                        className="btn-dark w-full "
+                        disabled={data.balance <= 0}
+                        onClick={openModal}>
+                        Transfer
+                    </button>
+                )}
             </div>
 
             <Modal
