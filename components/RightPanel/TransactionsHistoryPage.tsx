@@ -24,7 +24,7 @@ const TransactionsHistoryPage = ({
         type: "ERC20Transaction" | "ERC721Transaction" | "ERC1155Transaction";
         data: ERC20Transaction | ERC721Transaction | ERC1155Transaction;
     }> | null>(null);
-
+    console.log(wallet);
     useEffect(() => {
         signer?.signer?.getChainId().then((v) => {
             setChainId(v);
@@ -77,12 +77,19 @@ const TransactionsHistoryPage = ({
             ) : (
                 transactions.map((transaction) => {
                     if (transaction.type == "ERC20Transaction") {
+                        let token = wallet.erc20tokens.filter((erc20token) => {
+                            return (
+                                erc20token.contractAddr ==
+                                transaction.data.contractAddr
+                            );
+                        });
                         return (
                             <ERC20TransactionCard
                                 key={transaction.data.txnId}
                                 txn={transaction.data as ERC20Transaction}
                                 walletAddr={wallet.contractAddress}
                                 user={user}
+                                tokenName={token[0].contractTickerSymbol}
                             />
                         );
                     }

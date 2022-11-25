@@ -18,12 +18,14 @@ interface ERC20TransactionCardProps {
     txn: ERC20Transaction;
     walletAddr: string;
     user: Signer | null;
+    tokenName: string;
 }
 
 const ERC20TransactionCard = ({
     txn,
     walletAddr,
     user,
+    tokenName,
 }: ERC20TransactionCardProps) => {
     const timeAgo = new TimeAgo("en-US");
     const { signer } = useSignerContext();
@@ -40,7 +42,10 @@ const ERC20TransactionCard = ({
                     <span className="font-mono font-semibold">{txn.to}</span>
                     <p className="font-mono font-semibold">
                         {ethers.utils.formatUnits(txn.amount)}
-                        <span className="text-sm font-medium"> MATIC</span>
+                        <span className="text-sm font-medium">
+                            {" "}
+                            {tokenName}
+                        </span>
                     </p>
                 </div>
             </div>
