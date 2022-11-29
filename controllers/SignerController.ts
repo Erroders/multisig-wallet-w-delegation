@@ -19,7 +19,12 @@ export async function addSigner(
         try {
             const txn = await contract.addSigner(
                 signerData.address,
-                signerData.txnCap,
+                signerData.txnCap == -1
+                    ? signerData.txnCap
+                    : ethers.utils.parseUnits(
+                          signerData.txnCap!.toString(),
+                          "ether"
+                      ),
                 cid
             );
             const txnStatus = await txn.wait();

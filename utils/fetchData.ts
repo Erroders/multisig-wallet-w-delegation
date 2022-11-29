@@ -88,7 +88,7 @@ async function asERC20Token(
         contractName: tokenData.contract_name,
         contractAddr: tokenData.native_token
             ? "0x0000000000000000000000000000000000000000"
-            : tokenData.contract_address,
+            : tokenData.contract_address.toLowerCase(),
         contractTickerSymbol: tokenData.contract_ticker_symbol,
         balance: tokenData.balance,
         lockedBalance: graphData.erc20LockedBalance
@@ -125,7 +125,7 @@ async function asERC721Token(
         const { name, description, image } = await fetchIPFSNftData(nft);
         const erc721Token: ERC721Token = {
             contractName: tokenData.contract_name,
-            contractAddr: tokenData.contract_address,
+            contractAddr: tokenData.contract_address.toLowerCase(),
             contractTickerSymbol: tokenData.contract_ticker_symbol,
             nftName: name,
             description: description,
@@ -164,7 +164,7 @@ async function asERC1155Token(
         const { name, description, image } = await fetchIPFSNftData(nft);
         const erc1155Token: ERC1155Token = {
             contractName: tokenData.contract_name,
-            contractAddr: tokenData.contract_address,
+            contractAddr: tokenData.contract_address.toLowerCase(),
             contractTickerSymbol: tokenData.contract_ticker_symbol,
             nftName: name,
             description: description,
