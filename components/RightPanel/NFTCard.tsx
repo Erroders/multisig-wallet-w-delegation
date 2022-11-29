@@ -16,7 +16,7 @@ const NFTCard = ({ data }: NFTCardProps) => {
                     <img
                         className="h-full w-full transition-transform duration-300 ease-in-out group-hover:scale-110"
                         src={data.url}
-                        alt={data.contractName}
+                        alt={data.contractAddr}
                         onError={(target) => {
                             target.currentTarget.onerror = null;
                             const blockie = makeBlockie(
@@ -45,11 +45,17 @@ const NFTCard = ({ data }: NFTCardProps) => {
                         </p>
                     </div>
                     <div className="flex items-center space-x-2">
-                        <p className="text-lg font-bold">
-                            {data.contractName.length > 20
-                                ? data.contractName.substring(0, 20) + "..."
-                                : data.contractName}
-                        </p>
+                        {data.contractName ? (
+                            <p className="text-lg font-bold">
+                                {data.contractName.length > 20
+                                    ? data.contractName.substring(0, 20) + "..."
+                                    : data.contractName}
+                            </p>
+                        ) : (
+                            <p className="text-lg font-bold text-gray-300">
+                                ...
+                            </p>
+                        )}
                         {data.contractTickerSymbol && (
                             <p className="text-lg text-gray-500">
                                 ({data.contractTickerSymbol})
