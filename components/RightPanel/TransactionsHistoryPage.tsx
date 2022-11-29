@@ -48,21 +48,21 @@ const TransactionsHistoryPage = ({
                 });
             });
 
-        wallet.erc721Transactions &&
-            wallet.erc721Transactions.forEach((value) => {
-                tempArr.push({
-                    type: "ERC721Transaction",
-                    data: value,
-                });
-            });
+        // wallet.erc721Transactions &&
+        //     wallet.erc721Transactions.forEach((value) => {
+        //         tempArr.push({
+        //             type: "ERC721Transaction",
+        //             data: value,
+        //         });
+        //     });
 
-        wallet.erc1155Transactions &&
-            wallet.erc1155Transactions.forEach((value) => {
-                tempArr.push({
-                    type: "ERC1155Transaction",
-                    data: value,
-                });
-            });
+        // wallet.erc1155Transactions &&
+        //     wallet.erc1155Transactions.forEach((value) => {
+        //         tempArr.push({
+        //             type: "ERC1155Transaction",
+        //             data: value,
+        //         });
+        //     });
 
         setTransactions(tempArr);
         console.log(tempArr);
@@ -83,6 +83,22 @@ const TransactionsHistoryPage = ({
                                 transaction.data.contractAddr
                             );
                         });
+                        let approved = Boolean(
+                            transaction.data.approvedBy.find((addr: any) => {
+                                return (
+                                    signer?.address.toLowerCase() ===
+                                    addr.address
+                                );
+                            })
+                        );
+                        let disapproved = Boolean(
+                            transaction.data.disapprovedBy.find((addr: any) => {
+                                return (
+                                    signer?.address.toLowerCase() ===
+                                    addr.address
+                                );
+                            })
+                        );
                         return (
                             <ERC20TransactionCard
                                 key={transaction.data.txnId}
@@ -90,6 +106,8 @@ const TransactionsHistoryPage = ({
                                 walletAddr={wallet.contractAddress}
                                 user={user}
                                 tokenName={token[0].contractTickerSymbol}
+                                approved={approved}
+                                disapproved={disapproved}
                             />
                         );
                     }

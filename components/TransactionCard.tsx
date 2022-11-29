@@ -19,6 +19,8 @@ interface ERC20TransactionCardProps {
     walletAddr: string;
     user: Signer | null;
     tokenName: string;
+    approved: boolean;
+    disapproved: boolean;
 }
 
 const ERC20TransactionCard = ({
@@ -26,6 +28,8 @@ const ERC20TransactionCard = ({
     walletAddr,
     user,
     tokenName,
+    approved,
+    disapproved,
 }: ERC20TransactionCardProps) => {
     const timeAgo = new TimeAgo("en-US");
     const { signer } = useSignerContext();
@@ -71,6 +75,22 @@ const ERC20TransactionCard = ({
                         <div className="flex w-full justify-center">
                             <span className="btn-red w-min px-6 py-2.5 opacity-0 hover:scale-100 group-hover:opacity-100">
                                 Cancelled
+                            </span>
+                        </div>
+                    );
+                else if (approved)
+                    return (
+                        <div className="flex w-full justify-center">
+                            <span className="btn-yellow w-min px-6 py-2.5 opacity-0 hover:scale-100 group-hover:opacity-100">
+                                Approved
+                            </span>
+                        </div>
+                    );
+                else if (disapproved)
+                    return (
+                        <div className="flex w-full justify-center">
+                            <span className="btn-red w-min px-6 py-2.5 opacity-0 hover:scale-100 group-hover:opacity-100">
+                                Disapproved
                             </span>
                         </div>
                     );
